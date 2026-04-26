@@ -30,4 +30,4 @@ add_executable(PA9
         src/graphics/UIComponents.cpp
         src/core/gameState.cpp
         src/core/cell.cpp
-        src/core/board.cpp)
+        src/core/board.cpp )
