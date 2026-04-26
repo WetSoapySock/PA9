@@ -1,0 +1,74 @@
+[
+{
+  "directory": "/home/doobie/Documents/Spring 2026/CPT_S 122 C# Folder/Workspace/Programming Assignments/PA9/cmake-build-debug",
+  "command": "/usr/bin/c++ -I\"/home/doobie/Documents/Spring 2026/CPT_S 122 C# Folder/Workspace/Programming Assignments/PA9/include\" -I\"/home/doobie/Documents/Spring 2026/CPT_S 122 C# Folder/Workspace/Programming Assignments/PA9/src\" -g -std=gnu++14 -fdiagnostics-color=always -o CMakeFiles/PA9.dir/src/core/game.cpp.o -c \"/home/doobie/Documents/Spring 2026/CPT_S 122 C# Folder/Workspace/Programming Assignments/PA9/src/core/game.cpp\"",
+  "file": "/home/doobie/Documents/Spring 2026/CPT_S 122 C# Folder/Workspace/Programming Assignments/PA9/src/core/game.cpp",
+  "output": "/home/doobie/Documents/Spring 2026/CPT_S 122 C# Folder/Workspace/Programming Assignments/PA9/cmake-build-debug/CMakeFiles/PA9.dir/src/core/game.cpp.o"
+},
+{
+  "directory": "/home/doobie/Documents/Spring 2026/CPT_S 122 C# Folder/Workspace/Programming Assignments/PA9/cmake-build-debug",
+  "command": "/usr/bin/c++ -I\"/home/doobie/Documents/Spring 2026/CPT_S 122 C# Folder/Workspace/Programming Assignments/PA9/include\" -I\"/home/doobie/Documents/Spring 2026/CPT_S 122 C# Folder/Workspace/Programming Assignments/PA9/src\" -g -std=gnu++14 -fdiagnostics-color=always -o CMakeFiles/PA9.dir/src/utils/constants.cpp.o -c \"/home/doobie/Documents/Spring 2026/CPT_S 122 C# Folder/Workspace/Programming Assignments/PA9/src/utils/constants.cpp\"",
+  "file": "/home/doobie/Documents/Spring 2026/CPT_S 122 C# Folder/Workspace/Programming Assignments/PA9/src/utils/constants.cpp",
+  "output": "/home/doobie/Documents/Spring 2026/CPT_S 122 C# Folder/Workspace/Programming Assignments/PA9/cmake-build-debug/CMakeFiles/PA9.dir/src/utils/constants.cpp.o"
+},
+{
+  "directory": "/home/doobie/Documents/Spring 2026/CPT_S 122 C# Folder/Workspace/Programming Assignments/PA9/cmake-build-debug",
+  "command": "/usr/bin/c++ -I\"/home/doobie/Documents/Spring 2026/CPT_S 122 C# Folder/Workspace/Programming Assignments/PA9/include\" -I\"/home/doobie/Documents/Spring 2026/CPT_S 122 C# Folder/Workspace/Programming Assignments/PA9/src\" -g -std=gnu++14 -fdiagnostics-color=always -o CMakeFiles/PA9.dir/src/utils/timer.cpp.o -c \"/home/doobie/Documents/Spring 2026/CPT_S 122 C# Folder/Workspace/Programming Assignments/PA9/src/utils/timer.cpp\"",
+  "file": "/home/doobie/Documents/Spring 2026/CPT_S 122 C# Folder/Workspace/Programming Assignments/PA9/src/utils/timer.cpp",
+  "output": "/home/doobie/Documents/Spring 2026/CPT_S 122 C# Folder/Workspace/Programming Assignments/PA9/cmake-build-debug/CMakeFiles/PA9.dir/src/utils/timer.cpp.o"
+},
+{
+  "directory": "/home/doobie/Documents/Spring 2026/CPT_S 122 C# Folder/Workspace/Programming Assignments/PA9/cmake-build-debug",
+  "command": "/usr/bin/c++ -I\"/home/doobie/Documents/Spring 2026/CPT_S 122 C# Folder/Workspace/Programming Assignments/PA9/include\" -I\"/home/doobie/Documents/Spring 2026/CPT_S 122 C# Folder/Workspace/Programming Assignments/PA9/src\" -g -std=gnu++14 -fdiagnostics-color=always -o CMakeFiles/PA9.dir/src/utils/randomeGenerator.cpp.o -c \"/home/doobie/Documents/Spring 2026/CPT_S 122 C# Folder/Workspace/Programming Assignments/PA9/src/utils/randomeGenerator.cpp\"",
+  "file": "/home/doobie/Documents/Spring 2026/CPT_S 122 C# Folder/Workspace/Programming Assignments/PA9/src/utils/randomeGenerator.cpp",
+  "output": "/home/doobie/Documents/Spring 2026/CPT_S 122 C# Folder/Workspace/Programming Assignments/PA9/cmake-build-debug/CMakeFiles/PA9.dir/src/utils/randomeGenerator.cpp.o"
+},
+{
+  "directory": "/home/doobie/Documents/Spring 2026/CPT_S 122 C# Folder/Workspace/Programming Assignments/PA9/cmake-build-debug",
+  "command": "/usr/bin/c++ -I\"/home/doobie/Documents/Spring 2026/CPT_S 122 C# Folder/Workspace/Programming Assignments/PA9/include\" -I\"/home/doobie/Documents/Spring 2026/CPT_S 122 C# Folder/Workspace/Programming Assignments/PA9/src\" -g -std=gnu++14 -fdiagnostics-color=always -o CMakeFiles/PA9.dir/src/input/inputHandler.cpp.o -c \"/home/doobie/Documents/Spring 2026/CPT_S 122 C# Folder/Workspace/Programming Assignments/PA9/src/input/inputHandler.cpp\"",
+  "file": "/home/doobie/Documents/Spring 2026/CPT_S 122 C# Folder/Workspace/Programming Assignments/PA9/src/input/inputHandler.cpp",
+  "output": "/home/doobie/Documents/Spring 2026/CPT_S 122 C# Folder/Workspace/Programming Assignments/PA9/cmake-build-debug/CMakeFiles/PA9.dir/src/input/inputHandler.cpp.o"
+},
+{
+  "directory": "/home/doobie/Documents/Spring 2026/CPT_S 122 C# Folder/Workspace/Programming Assignments/PA9/cmake-build-debug",
+  "command": "/usr/bin/c++ -I\"/home/doobie/Documents/Spring 2026/CPT_S 122 C# Folder/Workspace/Programming Assignments/PA9/include\" -I\"/home/doobie/Documents/Spring 2026/CPT_S 122 C# Folder/Workspace/Programming Assignments/PA9/src\" -g -std=gnu++14 -fdiagnostics-color=always -o CMakeFiles/PA9.dir/src/input/mouseHandler.cpp.o -c \"/home/doobie/Documents/Spring 2026/CPT_S 122 C# Folder/Workspace/Programming Assignments/PA9/src/input/mouseHandler.cpp\"",
+  "file": "/home/doobie/Documents/Spring 2026/CPT_S 122 C# Folder/Workspace/Programming Assignments/PA9/src/input/mouseHandler.cpp",
+  "output": "/home/doobie/Documents/Spring 2026/CPT_S 122 C# Folder/Workspace/Programming Assignments/PA9/cmake-build-debug/CMakeFiles/PA9.dir/src/input/mouseHandler.cpp.o"
+},
+{
+  "directory": "/home/doobie/Documents/Spring 2026/CPT_S 122 C# Folder/Workspace/Programming Assignments/PA9/cmake-build-debug",
+  "command": "/usr/bin/c++ -I\"/home/doobie/Documents/Spring 2026/CPT_S 122 C# Folder/Workspace/Programming Assignments/PA9/include\" -I\"/home/doobie/Documents/Spring 2026/CPT_S 122 C# Folder/Workspace/Programming Assignments/PA9/src\" -g -std=gnu++14 -fdiagnostics-color=always -o CMakeFiles/PA9.dir/src/graphics/spriteSheet.cpp.o -c \"/home/doobie/Documents/Spring 2026/CPT_S 122 C# Folder/Workspace/Programming Assignments/PA9/src/graphics/spriteSheet.cpp\"",
+  "file": "/home/doobie/Documents/Spring 2026/CPT_S 122 C# Folder/Workspace/Programming Assignments/PA9/src/graphics/spriteSheet.cpp",
+  "output": "/home/doobie/Documents/Spring 2026/CPT_S 122 C# Folder/Workspace/Programming Assignments/PA9/cmake-build-debug/CMakeFiles/PA9.dir/src/graphics/spriteSheet.cpp.o"
+},
+{
+  "directory": "/home/doobie/Documents/Spring 2026/CPT_S 122 C# Folder/Workspace/Programming Assignments/PA9/cmake-build-debug",
+  "command": "/usr/bin/c++ -I\"/home/doobie/Documents/Spring 2026/CPT_S 122 C# Folder/Workspace/Programming Assignments/PA9/include\" -I\"/home/doobie/Documents/Spring 2026/CPT_S 122 C# Folder/Workspace/Programming Assignments/PA9/src\" -g -std=gnu++14 -fdiagnostics-color=always -o CMakeFiles/PA9.dir/src/graphics/renderer.cpp.o -c \"/home/doobie/Documents/Spring 2026/CPT_S 122 C# Folder/Workspace/Programming Assignments/PA9/src/graphics/renderer.cpp\"",
+  "file": "/home/doobie/Documents/Spring 2026/CPT_S 122 C# Folder/Workspace/Programming Assignments/PA9/src/graphics/renderer.cpp",
+  "output": "/home/doobie/Documents/Spring 2026/CPT_S 122 C# Folder/Workspace/Programming Assignments/PA9/cmake-build-debug/CMakeFiles/PA9.dir/src/graphics/renderer.cpp.o"
+},
+{
+  "directory": "/home/doobie/Documents/Spring 2026/CPT_S 122 C# Folder/Workspace/Programming Assignments/PA9/cmake-build-debug",
+  "command": "/usr/bin/c++ -I\"/home/doobie/Documents/Spring 2026/CPT_S 122 C# Folder/Workspace/Programming Assignments/PA9/include\" -I\"/home/doobie/Documents/Spring 2026/CPT_S 122 C# Folder/Workspace/Programming Assignments/PA9/src\" -g -std=gnu++14 -fdiagnostics-color=always -o CMakeFiles/PA9.dir/src/graphics/UIComponents.cpp.o -c \"/home/doobie/Documents/Spring 2026/CPT_S 122 C# Folder/Workspace/Programming Assignments/PA9/src/graphics/UIComponents.cpp\"",
+  "file": "/home/doobie/Documents/Spring 2026/CPT_S 122 C# Folder/Workspace/Programming Assignments/PA9/src/graphics/UIComponents.cpp",
+  "output": "/home/doobie/Documents/Spring 2026/CPT_S 122 C# Folder/Workspace/Programming Assignments/PA9/cmake-build-debug/CMakeFiles/PA9.dir/src/graphics/UIComponents.cpp.o"
+},
+{
+  "directory": "/home/doobie/Documents/Spring 2026/CPT_S 122 C# Folder/Workspace/Programming Assignments/PA9/cmake-build-debug",
+  "command": "/usr/bin/c++ -I\"/home/doobie/Documents/Spring 2026/CPT_S 122 C# Folder/Workspace/Programming Assignments/PA9/include\" -I\"/home/doobie/Documents/Spring 2026/CPT_S 122 C# Folder/Workspace/Programming Assignments/PA9/src\" -g -std=gnu++14 -fdiagnostics-color=always -o CMakeFiles/PA9.dir/src/core/gameState.cpp.o -c \"/home/doobie/Documents/Spring 2026/CPT_S 122 C# Folder/Workspace/Programming Assignments/PA9/src/core/gameState.cpp\"",
+  "file": "/home/doobie/Documents/Spring 2026/CPT_S 122 C# Folder/Workspace/Programming Assignments/PA9/src/core/gameState.cpp",
+  "output": "/home/doobie/Documents/Spring 2026/CPT_S 122 C# Folder/Workspace/Programming Assignments/PA9/cmake-build-debug/CMakeFiles/PA9.dir/src/core/gameState.cpp.o"
+},
+{
+  "directory": "/home/doobie/Documents/Spring 2026/CPT_S 122 C# Folder/Workspace/Programming Assignments/PA9/cmake-build-debug",
+  "command": "/usr/bin/c++ -I\"/home/doobie/Documents/Spring 2026/CPT_S 122 C# Folder/Workspace/Programming Assignments/PA9/include\" -I\"/home/doobie/Documents/Spring 2026/CPT_S 122 C# Folder/Workspace/Programming Assignments/PA9/src\" -g -std=gnu++14 -fdiagnostics-color=always -o CMakeFiles/PA9.dir/src/core/cell.cpp.o -c \"/home/doobie/Documents/Spring 2026/CPT_S 122 C# Folder/Workspace/Programming Assignments/PA9/src/core/cell.cpp\"",
+  "file": "/home/doobie/Documents/Spring 2026/CPT_S 122 C# Folder/Workspace/Programming Assignments/PA9/src/core/cell.cpp",
+  "output": "/home/doobie/Documents/Spring 2026/CPT_S 122 C# Folder/Workspace/Programming Assignments/PA9/cmake-build-debug/CMakeFiles/PA9.dir/src/core/cell.cpp.o"
+},
+{
+  "directory": "/home/doobie/Documents/Spring 2026/CPT_S 122 C# Folder/Workspace/Programming Assignments/PA9/cmake-build-debug",
+  "command": "/usr/bin/c++ -I\"/home/doobie/Documents/Spring 2026/CPT_S 122 C# Folder/Workspace/Programming Assignments/PA9/include\" -I\"/home/doobie/Documents/Spring 2026/CPT_S 122 C# Folder/Workspace/Programming Assignments/PA9/src\" -g -std=gnu++14 -fdiagnostics-color=always -o CMakeFiles/PA9.dir/src/core/board.cpp.o -c \"/home/doobie/Documents/Spring 2026/CPT_S 122 C# Folder/Workspace/Programming Assignments/PA9/src/core/board.cpp\"",
+  "file": "/home/doobie/Documents/Spring 2026/CPT_S 122 C# Folder/Workspace/Programming Assignments/PA9/src/core/board.cpp",
+  "output": "/home/doobie/Documents/Spring 2026/CPT_S 122 C# Folder/Workspace/Programming Assignments/PA9/cmake-build-debug/CMakeFiles/PA9.dir/src/core/board.cpp.o"
+}
+]

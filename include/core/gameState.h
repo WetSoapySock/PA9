@@ -1,0 +1,4 @@
+#ifndef PA9_GAMESTATE_H
+#define PA9_GAMESTATE_H
+
+#endif //PA9_GAMESTATE_H
