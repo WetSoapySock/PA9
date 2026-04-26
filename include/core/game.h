@@ -2,44 +2,53 @@
 #define PA9_GAME_H
 
 #pragma once
-
-#include "board.h"
-#include "gameState.h"
-#include "renderer.h"
-#include "inputHandler.h"
-#include "timer.h"
+#include "GameState.hpp"
+#include "../graphics/Renderer.hpp"
+#include "../input/InputHandler.hpp"
+#include "../utils/Constants.hpp"
 
 namespace Minesweeper {
     class Game {
     private:
-        Board board;
-        GameState state;
-        Renderer renderer;
-        InputHandler inputHandler;
-        Timer timer;
-        bool isRunning;
+        std::unique_ptr<GameState> gameState;
+        std::unique_ptr<Renderer> renderer;
+        std::unique_ptr<InputHandler> inputHandler;
+
+        bool running;
+        float lastTime;
+        int fps;
+
     public:
         Game();
-        Game(int width, int height, int mines);
-        ~Game();
+        ~Game() = default;
 
-        // Initizalize board
-        void init(int width, int height, int mines);
-        void reset();
+        // Lifecycle methods
+        bool initialize(int windowWidth, int windowHeight);
+        void run();
+        void shutdown();
 
         // Game loop
-        void run();
-        void update();
+        void processInput();
+        void update(float deltaTime);
         void render();
-        void handleInput();
 
-        GameState getGameState() const {return state;}
-        bool isRunning() const {return isRunning;}
+        // Event handlers
+        void onMouseClick(const sf::Event& event);
+        void onKeyPress(const sf::Event& event);
+        void onWindowResize(const sf::Event& event);
+
+        // Game actions
+        void startNewGame(const Difficulty& difficulty);
+        void togglePause();
+        void showMenu();
+
+        // Settings
+        void setDifficulty(const Difficulty& difficulty);
+
     private:
-        void checkWin();
-        void lose();
-
-
+        void setupCallbacks();
+        void calculateFPS(float deltaTime);
+        sf::Vector2i screenToBoardPosition(const sf::Vector2i& screenPos) const;
     };
 };
 #endif //PA9_GAME_H

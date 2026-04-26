@@ -3,32 +3,47 @@
 
 #pragma once
 
+#pragma once
+#include "../utils/Constants.hpp"
+
 namespace Minesweeper {
     class Cell {
     private:
-        bool isMine;
-        bool isRevealed;
-        bool isFlagged;
-        int adjacentMines;
+        CellType type;
+        CellState state;
+        int x, y;  // Position in grid
+
     public:
         Cell();
-        ~Cell();
+        explicit Cell(int posX, int posY);
+        ~Cell() = default;
 
         // Getters
-        bool getIsMine() const {return isMine;}
-        bool getIsRevealed() const {return isRevealed;}
-        bool getIsFlagged() const {return isFlagged;}
-        int getAdjacentMines() const {return adjacentMines;}
+        CellType getType() const {return type;}
+        CellState getState() const {return state;}
+        int getX() const {return x;}
+        int getY() const {return y;}
+        int getNumber() const;
+        bool isMine() const {return type == CellType::MINE;}
+        bool isRevealed() const {return state == CellState::REVEALED;}
+        bool isCovered() const {return state == CellState::COVERED;}
+        bool isFlagged() const {return state == CellState::FLAGGED;}
 
         // Setters
-        void setIsMine(bool value) {isMine = value;}
-        void setAdjacentMines(int value) {adjacentMines = value;}
+        void setType(CellType newType) {type = newType;}
+        void setState(CellState newState) {state = newState;}
+        void setNumber(int number);
 
-        bool reveal();  // If returned true, player stepped on mine
-        void toggleFlag();
+        // Actions
+        void reveal() {if (!isFlagged()) state = CellState::REVEALED;}
+        void toggleFlag() {
+            if (isCovered()) state = CellState::FLAGGED;
+            else if (isFlagged()) state = CellState::COVERED;
+        }
         void reset();
 
-
+        // Utility
+        bool operator==(const Cell& other) const;
     };
 };
 

@@ -50,13 +50,13 @@ namespace Minesweeper {
         int getAdjacentMineCount(int x, int y) const;
 
         // Getters
-        int getWidth() const { return width; }
-        int getHeight() const { return height; }
-        int getTotalMines() const { return totalMines; }
-        int getFlaggedMines() const { return flaggedMines; }
-        int getRemainingMines() const { return totalMines - flaggedMines; }
-        int getRevealedCells() const { return revealedCells; }
-        int getTotalCells() const { return width * height; }
+        int getWidth() const {return width;}
+        int getHeight() const {return height;}
+        int getTotalMines() const {return totalMines;}
+        int getFlaggedMines() const {return flaggedMines;}
+        int getRemainingMines() const {return totalMines - flaggedMines;}
+        int getRevealedCells() const {return revealedCells;}
+        int getTotalCells() const {return width * height;}
 
         // Iterators for rendering
         void forEachCell(std::function<void(Cell&)> func);
