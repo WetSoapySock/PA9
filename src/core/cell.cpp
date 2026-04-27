@@ -1,121 +1,46 @@
-
 #include "../include/core/Cell.h"
 
-/*
-  Function: Minesweeper::Cell::Cell()
-  Date Created : 04/26/2026
-  Date Last Modified : 04/26/2026
-  Description : Initialize a new cell obj
-  Input parameters : N\A
-  Returns : N\A
-  Preconditions :
-  Postconditions:
-  */
 Minesweeper::Cell::Cell()
 {
-	isMine = false;
-	isRevealed = false;
-	isFlagged = false;
-	adjacentMines = 0;
+	x = 0;
+	y = 0;
 
-	/*this creates an empty cell that can be modified later
-	to include any of these conditions */
+	type = CellType::EMPTY;
+	state = CellState::COVERED;
 }
 
-/*
-  Function: Minesweeper::Cell::~Cell()
-  Date Created : 04/26/2026
-  Date Last Modified : 04/26/2026
-  Description : Destructs the cell obj
-  Input parameters : N\A
-  Returns : N\A
-  Preconditions :
-  Postconditions:
-  */
-Minesweeper::Cell::~Cell()
+Minesweeper::Cell::Cell(int posX, int posY)
 {
-	//No dynamic memory is used so this is empty
+	x = posX;
+	y = posY;
+	type = CellType::EMPTY;
+	state = CellState::COVERED;
 }
 
-/*
-  Function: bool Minesweeper::Cell::reveal()
-  Date Created : 04/26/2026
-  Date Last Modified : 04/26/2026
-  Description : Reveals the cell
-  Input parameters : N\A
-  Returns : bool
-  Preconditions : Cannot be a flagged cell or an already revealed cell
-  Postconditions:
-  */
-bool Minesweeper::Cell::reveal()
+int Minesweeper::Cell::getNumber() const
 {
-	//check to make sure the cell is not flagged
-	if (isFlagged == true)
+	if (type == CellType::MINE)
 	{
-		return false;
+		return -1;
 	}
-	//check to make sure its not already revealed
-	if (isRevealed == true)
-	{
-		return false;
-	}
-	
-	//change the cell state to revealed
-	isRevealed = true;
-
-	//once revealed check to see if its a mine
-	if (isMine == true)
-	{
-		//use this to indicate whether its gameover or not
-		return true;
-	}
-
-	return false;
+	return static_cast<int>(type);
 }
 
-/*
-  Function: void Minesweeper::Cell::toggleFlag()
-  Date Created : 04/26/2026
-  Date Last Modified : 04/26/2026
-  Description : Toggles the flag condition on a cell
-  Input parameters : N\A
-  Returns :N\A
-  Preconditions :Cell cannot be revealed
-  Postconditions:
-  */
-void Minesweeper::Cell::toggleFlag()
+void Minesweeper::Cell::setNumber(int number)
 {
-	//check to see if the cell is revealed
-	if (isRevealed == false)
+	if (number >= 0 && number <= 8)
 	{
-		//We check to see if its flagged so we can switch the values
-		if (isFlagged == true)
-		{
-			isFlagged = false;
-		}
-		// This is for the case it isn't flagged
-		else
-		{
-			isFlagged = true;
-		}
+		type = static_cast<CellType>(number);
 	}
-
 }
 
-/*
-  Function: void Minesweeper::Cell::reset()
-  Date Created : 04/26/2026
-  Date Last Modified : 04/26/2026
-  Description : This resets the cell to its base conditions
-  Input parameters : N\A
-  Returns : N\A
-  Preconditions :
-  Postconditions:
-  */
 void Minesweeper::Cell::reset()
 {
-	isMine = false;
-	isRevealed = false;
-	isFlagged = false;
-	adjacentMines = 0;
+	type = CellType::EMPTY;
+	state = CellState::COVERED;
+}
+
+bool Minesweeper::Cell::operator==(const Cell& other)const
+{
+	return (x == other.x && y == other.y && state == other.state&& type == other.type);
 }

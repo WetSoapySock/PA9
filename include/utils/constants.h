@@ -3,7 +3,7 @@
 
 #pragma once
 #include <string>
-#include <SFML/Graphics/Color.hpp>
+#include <SFML/Graphics/Color.h>
 
 namespace Minesweeper {
     // Game Constants
@@ -50,7 +50,7 @@ namespace Minesweeper {
         static const Difficulty HARD;
         static const Difficulty CUSTOM;
     };
-    
+
     namespace Colors {
         const sf::Color BACKGROUND(50, 50, 50);
         const sf::Color COVERED_LIGHT(200, 200, 200);

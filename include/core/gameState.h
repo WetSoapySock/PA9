@@ -4,8 +4,8 @@
 #pragma once
 
 #pragma once
-#include "Board.hpp"
-#include "../utils/Timer.hpp"
+#include "Board.h"
+#include "../utils/Timer.h"
 
 namespace Minesweeper {
     enum class GameStatus {

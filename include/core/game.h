@@ -2,10 +2,10 @@
 #define PA9_GAME_H
 
 #pragma once
-#include "GameState.hpp"
-#include "../graphics/Renderer.hpp"
-#include "../input/InputHandler.hpp"
-#include "../utils/Constants.hpp"
+#include "GameState.h"
+#include "../graphics/Renderer.h"
+#include "../input/InputHandler.h"
+#include "../utils/Constants.h"
 
 namespace Minesweeper {
     class Game {
