@@ -9,50 +9,45 @@
 #include <unordered_map>
 #include <vector>
 
+/** AI Gen, Create a MouseHandler class for a Minesweeper game that:
+    Tracks left and right mouse button states
+    Tracks the current mouse position and movement
+    Converts screen coordinates to grid positions for Minesweeper
+    Tracks if mouse position is within the game window
+    Handles button press/release events **/
+
 namespace Minesweeper {
     enum class MouseButton {
-        LEFT = 0,
-        RIGHT = 1,
-        MIDDLE = 2,
-        XBUTTON1 = 3,
-        XBUTTON2 = 4,
-        NONE = 5
+        LEFT = 0,   // Reveal cell
+        RIGHT = 1,  // Place/remove flag
+        NONE = 2    // Default state
     };
 
     enum class MouseEventType {
-        BUTTON_PRESSED,
-        BUTTON_RELEASED,
-        MOVED,
-        WHEEL_SCROLLED,
-        ENTERED_WINDOW,
-        LEFT_WINDOW
+        BUTTON_PRESSED,     // Click
+        BUTTON_RELEASED,    // Release
+        MOVED               // Mouse movement
     };
 
     struct MouseEvent {
-        MouseEventType type;
-        MouseButton button;
-        sf::Vector2i position;
-        sf::Vector2i delta;
-        float wheelDelta;  // For scroll events
-        bool isShiftPressed;
-        bool isCtrlPressed;
-        bool isAltPressed;
+        MouseEventType type;      // What kind of even occured
+        MouseButton button;       // Left or right click
 
+        // AI Gen, "How can we create a vector space and tracking for mouse input?"
+        sf::Vector2i position;    // Mouse pos w/ screen coords
+
+        // AI Gen, "How can we create a vector space and tracking for mouse input?"
         MouseEvent()
             : type(MouseEventType::BUTTON_PRESSED)
             , button(MouseButton::NONE)
-            , position(0, 0)
-            , delta(0, 0)
-            , wheelDelta(0.0f)
-            , isShiftPressed(false)
-            , isCtrlPressed(false)
-            , isAltPressed(false) {}
+            , position(0, 0) {}
     };
 
+    // AI Gen, "How can we communicate with the computer and user when giving inputs in our game?"
     using MouseCallback = std::function<void(const MouseEvent&)>;
-
     class MouseHandler {
     public:
+        // Constructor and destructor
         MouseHandler();
         ~MouseHandler() = default;
 
@@ -60,208 +55,102 @@ namespace Minesweeper {
         MouseHandler(const MouseHandler&) = delete;
         MouseHandler& operator=(const MouseHandler&) = delete;
 
+        // AI Gen, Updates mouse state from SFML event
         void update(const sf::Event& event);
         void update();
         void reset();
 
-        /**
-         * @brief Register callback for specific mouse button press
-         * @param button Button to listen for
-         * @param callback Function to call when button is pressed
-         * @return Callback ID for removal
-         */
+        // AI Gen, Register callback for mouse button inputs.
         int onButtonPressed(MouseButton button, MouseCallback callback);
 
-        /**
-         * @brief Register callback for specific mouse button release
-         * @param button Button to listen for
-         * @param callback Function to call when button is released
-         * @return Callback ID for removal
-         */
+        // AI Gen, Register callback for mouse button release.
         int onButtonReleased(MouseButton button, MouseCallback callback);
 
-        /**
-         * @brief Register callback for mouse movement
-         * @param callback Function to call when mouse moves
-         * @return Callback ID for removal
-         */
+        // AI Gen, Register callback for mouse movements
         int onMouseMove(MouseCallback callback);
 
+        // AI Gen, Getters for current mouse state
+        sf::Vector2i getPosition() const {return currentPosition;}
+        sf::Vector2i getDelta() const {return movementDelta;}
+
+        bool isLeftPressed() const {return buttons[0];}
+        bool isRightPressed() const {return buttons[1];}
+        bool isAnyButtonPressed() const {return isLeftPressed() || isRightPressed();}
+
+        // AI Gen, Screen to grid coordinate conversion
         /**
-         * @brief Register callback for mouse wheel scroll
-         * @param callback Function to call when wheel is scrolled
-         * @return Callback ID for removal
-         */
-        int onWheelScroll(MouseCallback callback);
-
-        /**
-         * @brief Register callback for any mouse event
-         * @param callback Function to call for any mouse event
-         * @return Callback ID for removal
-         */
-        int onAnyEvent(MouseCallback callback);
-
-        /**
-         * @brief Remove a registered callback
-         * @param callbackId ID returned from registration
-         * @return true if callback was found and removed
-         */
-        bool removeCallback(int callbackId);
-
-        /**
-         * @brief Clear all registered callbacks
-         */
-        void clearCallbacks();
-
-        // Getters for current mouse state
-        sf::Vector2i getPosition() const { return currentPosition; }
-        sf::Vector2i getDelta() const { return movementDelta; }
-        sf::Vector2i getPreviousPosition() const { return previousPosition; }
-
-        bool isLeftPressed() const { return buttons[static_cast<int>(MouseButton::LEFT)]; }
-        bool isRightPressed() const { return buttons[static_cast<int>(MouseButton::RIGHT)]; }
-        bool isMiddlePressed() const { return buttons[static_cast<int>(MouseButton::MIDDLE)]; }
-        bool isButtonPressed(MouseButton button) const;
-
-        bool isWithinWindow() const { return withinWindow; }
-        bool isDragging() const { return isLeftPressed() || isRightPressed() || isMiddlePressed(); }
-
-        /**
-         * @brief Get current scroll delta (accumulated since last frame)
-         * @return Scroll delta value
-         */
-        float getScrollDelta() const { return scrollDelta; }
-
-        // Screen to grid coordinate conversion
-        /**
-         * @brief Convert screen coordinates to grid coordinates
          * @param screenPos Screen position in pixels
          * @param boardOffsetX Board X offset on screen
          * @param boardOffsetY Board Y offset on screen
          * @param cellSize Size of each cell in pixels
-         * @return Grid coordinates or (-1,-1) if out of bounds
-         */
+         * @return Grid coordinates or (-1,-1) if out of bounds */
         sf::Vector2i screenToGrid(const sf::Vector2i& screenPos,
                                   int boardOffsetX, int boardOffsetY,
                                   int cellSize) const;
 
+        // AI Gen, Get current grid position based on board placement
         /**
-         * @brief Get current grid position based on board placement
          * @param boardOffsetX Board X offset on screen
          * @param boardOffsetY Board Y offset on screen
          * @param cellSize Size of each cell in pixels
          * @param boardWidth Width of board in cells
          * @param boardHeight Height of board in cells
-         * @return Grid coordinates or (-1,-1) if out of bounds
-         */
+         * @return Grid coordinates or (-1,-1) if out of bounds */
         sf::Vector2i getGridPosition(int boardOffsetX, int boardOffsetY,
                                      int cellSize, int boardWidth, int boardHeight) const;
 
-        /**
-         * @brief Check if current mouse position is within board area
-         * @param boardOffsetX Board X offset on screen
-         * @param boardOffsetY Board Y offset on screen
-         * @param boardWidthPx Board width in pixels
-         * @param boardHeightPx Board height in pixels
-         * @return true if mouse is over the board
-         */
-        bool isOverBoard(int boardOffsetX, int boardOffsetY,
-                        int boardWidthPx, int boardHeightPx) const;
-
-        /**
-         * @brief Enable/disable mouse handling
-         */
-        void setEnabled(bool enable) { enabled = enable; }
-        bool isEnabled() const { return enabled; }
-
-        /**
-         * @brief Set double-click detection parameters
-         * @param maxTimeMs Maximum time between clicks for double-click (milliseconds)
-         * @param maxDistancePx Maximum pixel distance for double-click
-         */
-        void setDoubleClickParameters(int maxTimeMs, int maxDistancePx);
-
-        /**
-         * @brief Check if double-click occurred on specific button
-         * @param button Button to check
-         * @return true if double-click detected
-         */
-        bool isDoubleClick(MouseButton button) const;
-
-        /**
-         * @brief Reset double-click detection state
-         */
-        void resetDoubleClick();
+        // AI Gen, Enable/disable mouse handling
+        void setEnabled(bool enable) {enabled = enable;}
+        bool isEnabled() const {return enabled;}
 
     private:
-        // Button states (true = pressed)
-        bool buttons[5];
+        // AI Gen, Button state array, index 0 = left, 1 = right, 2 = none
+        bool buttons[2] = {false, false};
 
-        // Position tracking
-        sf::Vector2i currentPosition;
-        sf::Vector2i previousPosition;
-        sf::Vector2i movementDelta;
+        // AI Gen, Position tracking
+        sf::Vector2i currentPosition {0, 0};
+        sf::Vector2i previousPosition {0, 0};
+        sf::Vector2i movementDelta {0, 0};
 
-        // Scroll tracking
-        float scrollDelta;
-        float scrollAccumulator;
+        // AI Gen, Window focus tracking
+        bool withinWindow = true;  // Assumes cursor is within window
+        bool enabled = true;
 
-        // State flags
-        bool withinWindow;
-        bool enabled;
-
-        // Double-click detection
-        struct DoubleClickData {
-            sf::Vector2i lastPosition;
-            sf::Clock lastClickTime;
-            int maxTimeMs;
-            int maxDistancePx;
-            bool lastClickButton[5];
-
-            DoubleClickData()
-                : lastPosition(0, 0)
-                , maxTimeMs(300)  // 300ms default
-                , maxDistancePx(5) // 5 pixels default
-            {
-                for (int i = 0; i < 5; i++) {
-                    lastClickButton[i] = false;
-                }
-            }
-        } doubleClickData;
-
-        // Callback management
+        // AI-Gen, Callback storage
         struct CallbackEntry {
-            int id;
             MouseEventType type;
-            MouseButton button;  // For button-specific callbacks
+            MouseButton button;
             MouseCallback callback;
+
+            // AI-Gen, Constructor for easy creation
+            CallbackEntry(MouseEventType t, MouseButton b, MouseCallback c)
+                : type(t), button(b), callback(c) {}
         };
 
+        //  AI Gen, Stores all registered callbacks
         std::vector<CallbackEntry> callbacks;
-        int nextCallbackId;
 
-        // Helper methods
+        // AI Gen, Invoke matching callbacks for event
         void invokeCallbacks(const MouseEvent& event);
+
+        // AI Gen, Convert SFML button to internal enum
         MouseButton sfmlButtonToEnum(sf::Mouse::Button button) const;
-        MouseEventType sfmlEventToType(const sf::Event& event) const;
-        void updateModifierKeys(MouseEvent& event);
-        void updateScrollAccumulator();
-        void checkDoubleClick(const MouseEvent& event);
 
-        // Process specific event types
+        // AI Gen, Process button press event
         void processButtonPress(const sf::Event& event);
+
+        // AI Gen, Process button release event
         void processButtonRelease(const sf::Event& event);
+
+        // AI Gen, Process mouse movements
         void processMouseMove(const sf::Event& event);
-        void processWheelScroll(const sf::Event& event);
-        void processMouseEnter();
-        void processMouseLeave();
 
-        // Internal event dispatcher
+        // AI Gen, Dispatch button event to callbacks
         void dispatchButtonEvent(MouseButton button, bool pressed);
-        void dispatchMoveEvent();
-        void dispatchScrollEvent();
-    };
 
-} // namespace Minesweeper
+        // AI Gen, Dispatch movement event to callbacks
+        void dispatchMoveEvent();
+    };
+}
 
 #endif //PA9_MOUSEHANDLER_H
