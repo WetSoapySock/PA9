@@ -3,30 +3,30 @@
 
 #pragma once
 #include <SFML/System/Clock.h>
+#include <string>
+#include <sstream>
 
 namespace Minesweeper {
+    // Simple 999 second max timer
     class Timer {
     private:
-        sf::Clock clock;
-        float pausedTime;
-        bool isPaused;
-        float startTime;
-
+        int seconds;
+        bool running;
     public:
-        Timer();
-        ~Timer() = default;
+        Timer() : seconds(0), running(false) {}
 
-        void start();
-        void pause();
-        void resume();
-        void reset();
+        void start() {running = true;}
+        void pause() {running = false;}
+        void reset() {seconds = 0; running = false;}
 
-        float getElapsedSeconds() const;
-        int getElapsedSecondsInt() const;
-        std::string getFormattedTime() const;
+        void tick() {if (running && seconds < 999) seconds++;}
 
-        bool isRunning() const { return !isPaused; }
+        // Getter for seconds
+        int getSeconds() const {return seconds;}
+
+        bool isRunning() const {return running;}
+        bool isMaxed() const {return seconds >= 999;}
     };
-}
 
+}
 #endif //PA9_TIMER_H
