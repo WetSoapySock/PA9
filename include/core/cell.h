@@ -4,7 +4,7 @@
 #pragma once
 
 #pragma once
-#include "../utils/Constants.hpp"
+#include "../utils/Constants.h"
 
 namespace Minesweeper {
     class Cell {
