@@ -2,9 +2,7 @@
 #define PA9_TIMER_H
 
 #pragma once
-#include <SFML/System/Clock.h>
-#include <string>
-#include <sstream>
+
 
 namespace Minesweeper {
     // Simple 999 second max timer

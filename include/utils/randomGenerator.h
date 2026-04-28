@@ -1,5 +1,5 @@
-#ifndef PA9_RANDOMEGENERATOR_H
-#define PA9_RANDOMEGENERATOR_H
+#ifndef PA9_RANDOMGENERATOR_H
+#define PA9_RANDOMGENERATOR_H
 
 #pragma once
 #include <random>

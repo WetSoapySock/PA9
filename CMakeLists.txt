@@ -18,11 +18,11 @@ add_executable(PA9
         include/input/inputHandler.h
         include/input/mouseHandler.h
         include/utils/constants.h
-        include/utils/randomeGenerator.h
+        include/utils/randomGenerator.h
         include/utils/timer.h
         src/utils/constants.cpp
         src/utils/timer.cpp
-        src/utils/randomeGenerator.cpp
+        src/utils/randomGenerator.cpp
         src/input/inputHandler.cpp
         src/input/mouseHandler.cpp
         src/graphics/spriteSheet.cpp

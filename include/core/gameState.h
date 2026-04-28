@@ -3,9 +3,12 @@
 
 #pragma once
 
-#pragma once
+#include <vector>
+#include <functional>
+
 #include "Board.h"
 #include "../utils/Timer.h"
+#include "../utils/constants.h"
 
 namespace Minesweeper {
     enum class GameStatus {
