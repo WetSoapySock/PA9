@@ -2,42 +2,32 @@
 #define PA9_RANDOMGENERATOR_H
 
 #pragma once
-#include <random>
-#include <chrono>
-#include <stdexcept>  // For error handling
+// AI Gen, Libraries
+#include <random>      // Gen AI, mt19937 and distributions
+#include <chrono>      // Clock for seeding
+#include <stdexcept>   // Exception handling
+
+/** Gen AI, "We need a RandomGenerator class for our Minesweeper game to handle
+    random mine placement and any possible future features that require randomness.
+    Which libraries are needed for this to keep complexity as low as possible **/
 
 namespace Minesweeper {
-    /**
-     * @brief Random number generator for Minesweeper
-     *
-     * [AI-Gen] Handles all random number needs for mine placement
-     * and game randomization.
-     *
-     * Prompt used: "Create a RandomGenerator class for Minesweeper
-     * using mt19937 with methods for random integers, booleans,
-     * reseeding, and time-based seed generation."
-     */
     class RandomGenerator {
     private:
-        // AI Gen, "How can we implement a random seed for initialization?"
-        std::mt19937 rng;  ///< Mersenne Twister engine
-
+        std::mt19937 rng;  // Gen AI: Mersenne Twister engine
     public:
         RandomGenerator();
         ~RandomGenerator() = default;
 
-        // Ai Gen, Deletes copy to prevent accidental duplication
+        // No copy constructor or assignment
         RandomGenerator(const RandomGenerator&) = delete;
         RandomGenerator& operator=(const RandomGenerator&) = delete;
 
-        // Random number generation methods
-        int getInt(int min, int max);
+        int getInt(int min, int max);              // Random int
+        bool getBool(double probability = 0.5);    // 50/50 probability for true/false
 
-        // AI Gen, Generates random boolean 50/50
-        bool getBool(double probability = 0.5);
-
-        void reseed(unsigned int seed);
-        static unsigned int getTimeSeed();
+        void reseed(unsigned int seed);            // Manual reseed
+        static unsigned int getTimeSeed();         // Time-based seed
     };
 
 }
