@@ -2,9 +2,10 @@
 #define PA9_UICOMPONENTS_H
 
 #pragma once
-#include <SFML/Graphics.h>
+#include <SFML/Graphics.hpp>
 #include <functional>
 #include <string>
+#include <memory>
 
 namespace Minesweeper {
     class UIComponent {
@@ -18,7 +19,7 @@ namespace Minesweeper {
     class Button : public UIComponent {
     private:
         sf::RectangleShape shape;
-        sf::Text label;
+        std::unique_ptr<sf::Text> label;
         std::function<void()> onClick;
         bool hovered;
         bool pressed;
@@ -44,7 +45,7 @@ namespace Minesweeper {
 
     class TextLabel : public UIComponent {
     private:
-        sf::Text text;
+        std::unique_ptr<sf::Text> text;;
 
     public:
         TextLabel();

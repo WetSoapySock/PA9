@@ -2,8 +2,8 @@
 #define PA9_SPRITESHEET_H
 
 #pragma once
-#include <SFML/Graphics/Texture.h>
-#include <SFML/Graphics/Sprite.h>
+#include <SFML/Graphics/Texture.hpp>
+#include <SFML/Graphics/Sprite.hpp>
 #include <unordered_map>
 #include <string>
 

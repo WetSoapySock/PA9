@@ -2,8 +2,9 @@
 #include "../include/core/Board.h"
 #include <cstdlib>
 #include <ctime>
+#include <cstddef>
 
-Minesweepe::Board::Board()
+Minesweeper::Board::Board()
 {
 	width = 0;
 	height = 0;
@@ -13,7 +14,7 @@ Minesweepe::Board::Board()
 	minesPlaced = false;
 }
 
-Minesweeper Board::Board(int w, int h, int mines)
+Minesweeper::Board::Board(int w, int h, int mines)
 {
 	initialize(w, h, mines);
 }
@@ -124,7 +125,7 @@ int Minesweeper::Board::getAdjacentMineCount(int x, int y)const
 {
 	int count = 0;
 
-	for (int i = 0; i < directions.size(); i++)
+	for (size_t i = 0; i < directions.size(); i++)
 	{
 		int newX = x + directions[i].first;
 		int newY = y + directions[i].second;
@@ -175,7 +176,7 @@ bool Minesweeper::Board::revealCell(int x, int y)
 
 void Minesweeper::Board::revealArea(int x, int y)
 {
-	for (int i = 0; i < directions.size(); i++)
+	for (size_t i = 0; i < directions.size(); i++)
 	{
 		int newX = x + directions[i].first;
 		int newY = y + directions[i].second;

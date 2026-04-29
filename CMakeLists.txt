@@ -15,7 +15,7 @@ add_executable(PA9
         include/graphics/renderer.h
         include/graphics/spriteSheet.h
         include/graphics/UIComponents.h
-        include/input/inputHandler.h
+        
         include/input/mouseHandler.h
         include/utils/constants.h
         include/utils/randomGenerator.h
@@ -23,14 +23,14 @@ add_executable(PA9
         src/utils/constants.cpp
         src/utils/timer.cpp
         src/utils/randomGenerator.cpp
-        src/input/inputHandler.cpp
+        
         src/input/mouseHandler.cpp
         src/graphics/spriteSheet.cpp
         src/graphics/renderer.cpp
         src/graphics/UIComponents.cpp
         src/core/gameState.cpp
         src/core/cell.cpp
-        src/core/board.cpp )
+        src/core/board.cpp  "src/main/main.cpp")
 
         include(FetchContent)
 

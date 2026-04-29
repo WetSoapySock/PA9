@@ -3,8 +3,8 @@
 
 #pragma once
 
-#pragma once
-#include "../utils/Constants.h"
+
+#include "../utils/constants.h"
 
 namespace Minesweeper {
     class Cell {
@@ -45,6 +45,6 @@ namespace Minesweeper {
         // Utility
         bool operator==(const Cell& other) const;
     };
-};
+}
 
 #endif //PA9_CELL_H

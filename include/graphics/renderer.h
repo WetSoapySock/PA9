@@ -47,9 +47,6 @@ namespace Minesweeper {
         void setShowGridLines(bool show) { showGridLines = show; }
         void setCheckerboardPattern(bool use) { useCheckerboardPattern = use; }
 
-        // Event handling
-        bool pollEvent(sf::Event& event);
-
         // Getters
         sf::RenderWindow& getWindow() { return window; }
         const sf::RenderWindow& getWindow() const { return window; }

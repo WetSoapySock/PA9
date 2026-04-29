@@ -20,23 +20,23 @@ void Minesweeper::MouseHandler::update(const sf::Event& event)
         return;
     }
 
-    if (event.type == sf::Event::MouseButtonPressed)
+    if (event.is<sf::Event::MouseButtonPressed>())
     {
         processButtonPress(event);
     }
-    else if (event.type == sf::Event::MouseButtonReleased)
+    else if (event.is<sf::Event::MouseButtonReleased>())
     {
         processButtonRelease(event);
     }
-    else if (event.type == sf::Event::MouseMoved)
+    else if (event.is<sf::Event::MouseMoved>())
     {
         processMouseMove(event);
     }
-    else if (event.type == sf::Event::MouseEntered)
+    else if (event.is<sf::Event::MouseEntered>())
     {
         withinWindow = true;
     }
-    else if (event.type == sf::Event::MouseLeft)
+    else if (event.is<sf::Event::MouseLeft>())
     {
         withinWindow = false;
     }
@@ -63,21 +63,18 @@ void Minesweeper::MouseHandler::reset()
 int Minesweeper::MouseHandler::onButtonPressed(MouseButton button, MouseCallback callback)
 {
     callbacks.push_back(CallbackEntry(MouseEventType::BUTTON_PRESSED, button, callback));
-
     return static_cast<int>(callbacks.size()) - 1;
 }
 
 int Minesweeper::MouseHandler::onButtonReleased(MouseButton button, MouseCallback callback)
 {
     callbacks.push_back(CallbackEntry(MouseEventType::BUTTON_RELEASED, button, callback));
-
     return static_cast<int>(callbacks.size()) - 1;
 }
 
 int Minesweeper::MouseHandler::onMouseMove(MouseCallback callback)
 {
     callbacks.push_back(CallbackEntry(MouseEventType::MOVED, MouseButton::NONE, callback));
-
     return static_cast<int>(callbacks.size()) - 1;
 }
 
@@ -99,10 +96,7 @@ sf::Vector2i Minesweeper::MouseHandler::screenToGrid(const sf::Vector2i& screenP
         return sf::Vector2i(-1, -1);
     }
 
-    int gridX = adjustedX / cellSize;
-    int gridY = adjustedY / cellSize;
-
-    return sf::Vector2i(gridX, gridY);
+    return sf::Vector2i(adjustedX / cellSize, adjustedY / cellSize);
 }
 
 sf::Vector2i Minesweeper::MouseHandler::getGridPosition(int boardOffsetX,
@@ -111,15 +105,10 @@ sf::Vector2i Minesweeper::MouseHandler::getGridPosition(int boardOffsetX,
     int boardWidth,
     int boardHeight) const
 {
-    sf::Vector2i gridPosition = screenToGrid(currentPosition,
-        boardOffsetX,
-        boardOffsetY,
-        cellSize);
+    sf::Vector2i gridPosition = screenToGrid(currentPosition, boardOffsetX, boardOffsetY, cellSize);
 
-    if (gridPosition.x < 0 ||
-        gridPosition.y < 0 ||
-        gridPosition.x >= boardWidth ||
-        gridPosition.y >= boardHeight)
+    if (gridPosition.x < 0 || gridPosition.y < 0 ||
+        gridPosition.x >= boardWidth || gridPosition.y >= boardHeight)
     {
         return sf::Vector2i(-1, -1);
     }
@@ -144,11 +133,11 @@ void Minesweeper::MouseHandler::invokeCallbacks(const MouseEvent& event)
 
 Minesweeper::MouseButton Minesweeper::MouseHandler::sfmlButtonToEnum(sf::Mouse::Button button) const
 {
-    if (button == sf::Mouse::Left)
+    if (button == sf::Mouse::Button::Left)
     {
         return MouseButton::LEFT;
     }
-    else if (button == sf::Mouse::Right)
+    else if (button == sf::Mouse::Button::Right)
     {
         return MouseButton::RIGHT;
     }
@@ -158,9 +147,16 @@ Minesweeper::MouseButton Minesweeper::MouseHandler::sfmlButtonToEnum(sf::Mouse::
 
 void Minesweeper::MouseHandler::processButtonPress(const sf::Event& event)
 {
-    currentPosition = sf::Vector2i(event.mouseButton.x, event.mouseButton.y);
+    const auto* mouseEvent = event.getIf<sf::Event::MouseButtonPressed>();
 
-    MouseButton button = sfmlButtonToEnum(event.mouseButton.button);
+    if (mouseEvent == nullptr)
+    {
+        return;
+    }
+
+    currentPosition = mouseEvent->position;
+
+    MouseButton button = sfmlButtonToEnum(mouseEvent->button);
 
     if (button == MouseButton::LEFT)
     {
@@ -176,9 +172,16 @@ void Minesweeper::MouseHandler::processButtonPress(const sf::Event& event)
 
 void Minesweeper::MouseHandler::processButtonRelease(const sf::Event& event)
 {
-    currentPosition = sf::Vector2i(event.mouseButton.x, event.mouseButton.y);
+    const auto* mouseEvent = event.getIf<sf::Event::MouseButtonReleased>();
 
-    MouseButton button = sfmlButtonToEnum(event.mouseButton.button);
+    if (mouseEvent == nullptr)
+    {
+        return;
+    }
+
+    currentPosition = mouseEvent->position;
+
+    MouseButton button = sfmlButtonToEnum(mouseEvent->button);
 
     if (button == MouseButton::LEFT)
     {
@@ -194,8 +197,15 @@ void Minesweeper::MouseHandler::processButtonRelease(const sf::Event& event)
 
 void Minesweeper::MouseHandler::processMouseMove(const sf::Event& event)
 {
+    const auto* mouseEvent = event.getIf<sf::Event::MouseMoved>();
+
+    if (mouseEvent == nullptr)
+    {
+        return;
+    }
+
     previousPosition = currentPosition;
-    currentPosition = sf::Vector2i(event.mouseMove.x, event.mouseMove.y);
+    currentPosition = mouseEvent->position;
     movementDelta = currentPosition - previousPosition;
 
     dispatchMoveEvent();

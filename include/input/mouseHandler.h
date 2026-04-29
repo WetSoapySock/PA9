@@ -2,7 +2,7 @@
 #define PA9_MOUSEHANDLER_H
 
 #pragma once
-#include <SFML/Window/Mouse.h>
+#include <SFML/Window/Mouse.hpp>
 #include <SFML/Window/Event.hpp>
 #include <SFML/System/Vector2.hpp>
 #include <functional>

@@ -42,4 +42,4 @@ namespace Minesweeper {
 
 }
 
-#endif //PA9_RANDOMEGENERATOR_H
+#endif //PA9_RANDOMGENERATOR_H

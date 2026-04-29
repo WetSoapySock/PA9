@@ -3,7 +3,7 @@
 
 #pragma once
 #include <string>
-#include <SFML/Graphics/Color.h>
+#include <SFML/Graphics/Color.hpp>
 
 /** Create a Constants.hpp file for Minesweeper in C++ with SFML containing:
     A border size of 1 cell for safety
