@@ -3,66 +3,61 @@
 
 #pragma once
 
-#include <vector>
-#include <functional>
-
-#include "board.h"
-#include "../utils/timer.h"
-#include "../utils/constants.h"
+#include <vector>                           
+#include <functional>                       
+#include "board.h"                          
+#include "../utils/timer.h"                 
+#include "../utils/constants.h"             
 
 namespace Minesweeper {
     enum class GameStatus {
-        PLAYING,
-        GAME_OVER,
-        VICTORY
+        PLAYING,     // Game is active
+        GAME_OVER,   // Lose
+        VICTORY      // Win
     };
 
     class GameState {
     private:
-        GameStatus status;
-        Board board;
-        Timer timer;
-        Difficulty currentDifficulty;
-        bool firstMove;
-
-        // Callback system for state changes (optional, can be removed if not used)
+        GameStatus status;                           
+        Board board;                               
+        Timer timer;    // Timer for seconds
+        Difficulty currentDifficulty;    // Difficulty settings
+        bool firstMove;    // First click flag
+        
+        // Gen AI, Callbacks
         std::vector<std::function<void(GameStatus)>> stateChangeCallbacks;
 
     public:
         // Constructor and destructor
-        GameState();
-        ~GameState() = default;
+        GameState();                      
+        ~GameState() = default;               
 
-        // Setter
-        void setStatus(GameStatus newStatus);
+        void setStatus(GameStatus newStatus); // Changes status
 
-        // Getter
         GameStatus getStatus() const {return status;}
-
         bool isPlaying() const {return status == GameStatus::PLAYING;}
         bool isGameOver() const {return status == GameStatus::GAME_OVER;}
         bool isVictory() const {return status == GameStatus::VICTORY;}
 
-        void startNewGame(const Difficulty& difficulty);
+        void startNewGame(const Difficulty& difficulty); 
         void resetGame();
-        void handleReveal(int x, int y);
-        void handleFlag(int x, int y);
+        void handleReveal(int x, int y);                  // Left click
+        void handleFlag(int x, int y);                    // Right click
 
-        Board& getBoard() {return board;}     // Get reference to board
-        const Board& getBoard() const {return board;}   // Get read only reference to board
+        Board& getBoard() {return board;}
+        const Board& getBoard() const {return board;}
 
-        Timer& getTimer() {return timer;}     // Get reference to timer
-        const Timer& getTimer() const {return timer;} // Get read only reference to timer
+        Timer& getTimer() {return timer;}
+        const Timer& getTimer() const {return timer;}
 
         Difficulty getDifficulty() const {return currentDifficulty;}
-
         bool isFirstMove() const {return firstMove;}
 
-        // ======================== CALLBACK SYSTEM (Optional) ========================
-        void onGameStateChange(std::function<void(GameStatus)> callback);
+        // Gen AI, Register callback
+        void onGameStateChange(std::function<void(GameStatus)> callback); 
 
     private:
-        void notifyStateChange();
+        void notifyStateChange();  // Gen AI, Notifies player of game state
     };
 }
 
