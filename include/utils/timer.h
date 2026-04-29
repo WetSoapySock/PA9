@@ -10,20 +10,30 @@ namespace Minesweeper {
     private:
         int seconds;
         bool running;
+        bool started;   // true means first click
     public:
-        Timer() : seconds(0), running(false) {}
+        Timer() : seconds(0), running(false), started(false) {}
+        ~Timer() = default;
+        
+        void start() {if (!started) started = true, running = true;}
+        void stop() {running = false;}
+        void reset() {seconds = 0; running = false, started = false;}
 
-        void start() {running = true;}
-        void pause() {running = false;}
-        void reset() {seconds = 0; running = false;}
-
-        void tick() {if (running && seconds < 999) seconds++;}
+        void tick() {
+            if (running && seconds < 999){
+                seconds++;
+                if (seconds >= 999) {
+                    running = false;    // Timer stops at 999 seconds
+                }
+            }
+        }
 
         // Getter for seconds
         int getSeconds() const {return seconds;}
 
         bool isRunning() const {return running;}
         bool isMaxed() const {return seconds >= 999;}
+        bool hasStarted() const {return started;}
     };
 
 }
