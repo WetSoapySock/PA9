@@ -1,9 +1,10 @@
-#define PA9_LEADERBOARDPROTOCOL_H
+#ifndef PA9_LEADERBOARDPROTOCOL_H
 #define PA9_LEADERBOARDPROTOCOL_H
 
 #pragma once
 #include <string>
 #include <vector>
+#include <sstream>
 
 // CITE AI
 namespace Minesweeper {

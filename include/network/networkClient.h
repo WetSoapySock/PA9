@@ -6,7 +6,7 @@
 #include <winsock2.h>   // core networking functionality
 #include <ws2tcpip.h>   // TCP/IP and socket helper functions
 #include <string>
-#include "leaderboardProtocol.hpp"
+#include "leaderboardProtocol.h"
 
 #pragma comment(lib, "ws2_32.lib") // Tells the linker to include Winsock 2 library
 
@@ -28,7 +28,11 @@ namespace Minesweeper {
         NetworkClient() : socket(INVALID_SOCKET), connected(false) {
            // Gen AI, Windows sockets for network
             WSADATA wsaData;
-            WSAStartup(MAKEWORD(2, 2), &wsaData);
+            int result = WSAStartup(MAKEWORD(2, 2), &wsaData);
+            if (result != 0)
+            {
+                connected = false;
+            }
         }
 
          // Gen AI, cleans up network resources
