@@ -1,11 +1,10 @@
-#ifndef PA9_GAME_H
-#define PA9_GAME_H
-
 #pragma once
-#include "GameState.h"
-#include "../graphics/Renderer.h"
-#include "../input/InputHandler.h"
-#include "../utils/Constants.h"
+#include "gameState.hpp"
+#include "../graphics/renderer.h"
+#include "../input/inputHandler.h"
+#include "../input/mouseHandler.h"
+#include "../network/networkClient.h"
+#include <memory>
 
 namespace Minesweeper {
     class Game {
@@ -13,42 +12,38 @@ namespace Minesweeper {
         std::unique_ptr<GameState> gameState;
         std::unique_ptr<Renderer> renderer;
         std::unique_ptr<InputHandler> inputHandler;
+        std::unique_ptr<MouseHandler> mouseHandler;
+        std::unique_ptr<NetworkClient> networkClient;
 
         bool running;
-        float lastTime;
-        int fps;
-
+        bool showLeaderboard;
+        std::vector<LeaderboardEntry> currentLeaderboard;
     public:
         Game();
         ~Game() = default;
 
-        // Lifecycle methods
         bool initialize(int windowWidth, int windowHeight);
         void run();
         void shutdown();
 
-        // Game loop
         void processInput();
         void update(float deltaTime);
         void render();
 
-        // Event handlers
         void onMouseClick(const sf::Event& event);
         void onKeyPress(const sf::Event& event);
-        void onWindowResize(const sf::Event& event);
 
-        // Game actions
         void startNewGame(const Difficulty& difficulty);
         void togglePause();
-        void showMenu();
+        void submitScoreToLeaderboard();
+        void showLeaderboardUI();
 
-        // Settings
         void setDifficulty(const Difficulty& difficulty);
-
+        std::string getDifficultyName() const;
     private:
         void setupCallbacks();
-        void calculateFPS(float deltaTime);
         sf::Vector2i screenToBoardPosition(const sf::Vector2i& screenPos) const;
+        void renderLeaderboard();
+        void showNameInputDialog();
     };
-};
-#endif //PA9_GAME_H
+} // namespace Minesweeper
