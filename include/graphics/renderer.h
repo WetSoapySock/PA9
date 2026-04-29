@@ -2,10 +2,10 @@
 #define PA9_RENDERER_H
 
 #pragma once
-#include <SFML/Graphics.h>
+#include <SFML/Graphics.hpp>
 #include "../core/Board.h"
 #include "SpriteSheet.h"
-#include "UIComponent.h"
+#include "UIComponents.h"
 #include <memory>
 #include <vector>
 
