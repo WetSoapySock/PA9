@@ -47,3 +47,5 @@ target_link_libraries(PA9 PRIVATE
     SFML::Window
     SFML::System
 )
+
+file(COPY ${CMAKE_SOURCE_DIR}/assets DESTINATION ${CMAKE_BINARY_DIR})

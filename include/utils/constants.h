@@ -77,11 +77,11 @@ namespace Minesweeper {
         const sf::Color BACKGROUND(50, 50, 50);        // Window background
 
         // Covered cell colors with checkerboard pattern
-        const sf::Color COVERED_LIGHT(200, 200, 200);  // Light tiles
-        const sf::Color COVERED_DARK(170, 170, 170);   // Dark tiles
+        const sf::Color COVERED_LIGHT(82, 170, 255);  // Light tiles
+        const sf::Color COVERED_DARK(40, 130, 220);   // Dark tiles
 
         // Revealed cell colors
-        const sf::Color REVEALED(220, 220, 220);       // White revealed cell
+        const sf::Color REVEALED(190, 190, 190);       // White revealed cell
 
         // UI Text colors
         const sf::Color TEXT_PRIMARY(255, 255, 255);   // White text
@@ -91,6 +91,15 @@ namespace Minesweeper {
         const sf::Color SUCCESS(76, 175, 80);          ///< Green for win message
         const sf::Color ERROR(244, 67, 54);            ///< Red for game over
         const sf::Color WARNING(255, 152, 0);          ///< Orange for warnings
+
+        const sf::Color NUMBER_1(25, 118, 210);
+        const sf::Color NUMBER_2(56, 142, 60);
+        const sf::Color NUMBER_3(211, 47, 47);
+        const sf::Color NUMBER_4(123, 31, 162);
+        const sf::Color NUMBER_5(255, 143, 0);
+        const sf::Color NUMBER_6(0, 150, 136);
+        const sf::Color NUMBER_7(50, 50, 50);
+        const sf::Color NUMBER_8(100, 100, 100);
     }
 
 }

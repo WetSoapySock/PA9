@@ -5,9 +5,10 @@ Minesweeper::Renderer::Renderer()
 {
     boardOffsetX = 0;
     boardOffsetY = 0;
-
     showGridLines = true;
     useCheckerboardPattern = true;
+
+    fontLoaded = false;
 }
 
 bool Minesweeper::Renderer::initialize(int width, int height, const std::string& title)
@@ -18,6 +19,8 @@ bool Minesweeper::Renderer::initialize(int width, int height, const std::string&
     {
         return false;
     }
+
+    fontLoaded = font.openFromFile("assets/arial.ttf");
 
     return true;
 }
@@ -30,12 +33,6 @@ void Minesweeper::Renderer::clear()
 void Minesweeper::Renderer::display()
 {
     window.display();
-}
-
-void Minesweeper::Renderer::setBoardOffset(int x, int y)
-{
-    boardOffsetX = x;
-    boardOffsetY = y;
 }
 
 void Minesweeper::Renderer::calculateBoardOffset(int boardWidth, int boardHeight)
@@ -56,7 +53,6 @@ void Minesweeper::Renderer::renderBoard(const Board& board)
         for (int x = 0; x < board.getWidth(); x++)
         {
             const Cell* cell = board.getCell(x, y);
-
             if (cell != nullptr)
             {
                 renderCell(*cell, x, y);
@@ -68,12 +64,11 @@ void Minesweeper::Renderer::renderBoard(const Board& board)
 void Minesweeper::Renderer::renderCell(const Cell& cell, int x, int y)
 {
     sf::RectangleShape cellShape;
-
-    cellShape.setSize(sf::Vector2f(CELL_SIZE, CELL_SIZE));
+    cellShape.setSize(sf::Vector2f((float)CELL_SIZE, (float)CELL_SIZE));
 
     cellShape.setPosition(sf::Vector2f(
-        static_cast<float>(boardOffsetX + x * CELL_SIZE),
-        static_cast<float>(boardOffsetY + y * CELL_SIZE)
+        (float)(boardOffsetX + x * CELL_SIZE),
+        (float)(boardOffsetY + y * CELL_SIZE)
     ));
 
     cellShape.setFillColor(getCellColor(cell, x, y));
@@ -86,9 +81,8 @@ void Minesweeper::Renderer::renderCell(const Cell& cell, int x, int y)
 
     window.draw(cellShape);
 
-    // Temporary/simple rendering:
-    // This draws mines and numbers using colored blocks/text would require a font.
-    // If your SpriteSheet is ready, we can replace this with sprite rendering later.
+    // 🔥 Draw number
+    renderCellNumber(cell, x, y);
 }
 
 sf::Color Minesweeper::Renderer::getCellColor(const Cell& cell, int x, int y) const
@@ -96,31 +90,62 @@ sf::Color Minesweeper::Renderer::getCellColor(const Cell& cell, int x, int y) co
     if (cell.isRevealed())
     {
         if (cell.isMine())
-        {
             return Colors::ERROR;
-        }
 
         return Colors::REVEALED;
     }
 
     if (cell.isFlagged())
-    {
         return Colors::WARNING;
-    }
 
     if (useCheckerboardPattern)
     {
-        if ((x + y) % 2 == 0)
-        {
-            return Colors::COVERED_LIGHT;
-        }
-        else
-        {
-            return Colors::COVERED_DARK;
-        }
+        return ((x + y) % 2 == 0)
+            ? Colors::COVERED_LIGHT
+            : Colors::COVERED_DARK;
     }
 
     return Colors::COVERED_LIGHT;
+}
+
+
+void Minesweeper::Renderer::renderCellNumber(const Cell& cell, int x, int y)
+{
+    if (!fontLoaded || !cell.isRevealed() || cell.isMine())
+        return;
+
+    int number = cell.getNumber();
+    if (number <= 0)
+    {
+        return;
+    }
+        
+    sf::Text text(font, std::to_string(number), 20);
+    text.setFillColor(getNumberColor(number));
+    text.setStyle(sf::Text::Bold);
+
+    float px = (float)(boardOffsetX + x * CELL_SIZE);
+    float py = (float)(boardOffsetY + y * CELL_SIZE);
+
+    text.setPosition(sf::Vector2f(px + 10, py + 5));
+
+    window.draw(text);
+}
+
+sf::Color Minesweeper::Renderer::getNumberColor(int number) const
+{
+    switch (number)
+    {
+    case 1: return Colors::NUMBER_1;
+    case 2: return Colors::NUMBER_2;
+    case 3: return Colors::NUMBER_3;
+    case 4: return Colors::NUMBER_4;
+    case 5: return Colors::NUMBER_5;
+    case 6: return Colors::NUMBER_6;
+    case 7: return Colors::NUMBER_7;
+    case 8: return Colors::NUMBER_8;
+    default: return sf::Color::Black;
+    }
 }
 
 void Minesweeper::Renderer::addUIComponent(std::unique_ptr<UIComponent> component)
@@ -130,11 +155,9 @@ void Minesweeper::Renderer::addUIComponent(std::unique_ptr<UIComponent> componen
 
 void Minesweeper::Renderer::renderUI()
 {
-    for (int i = 0; i < uiComponents.size(); i++)
+    for (auto& comp : uiComponents)
     {
-        if (uiComponents[i] != nullptr)
-        {
-            uiComponents[i]->draw(window);
-        }
+        if (comp)
+            comp->draw(window);
     }
 }

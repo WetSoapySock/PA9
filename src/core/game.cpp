@@ -10,6 +10,8 @@ Minesweeper::Game::Game()
 
     running = false;
     showLeaderboard = false;
+
+    timerAccumulator = 0.0f;
 }
 
 bool Minesweeper::Game::initialize(int windowWidth, int windowHeight)
@@ -89,9 +91,17 @@ void Minesweeper::Game::processInput()
 
 void Minesweeper::Game::update(float deltaTime)
 {
-    if (gameState != nullptr)
+    if (gameState != nullptr &&
+        gameState->isPlaying() &&
+        gameState->getTimer().isRunning())
     {
-        gameState->getTimer().tick();
+        timerAccumulator += deltaTime;
+
+        if (timerAccumulator >= 1.0f)
+        {
+            gameState->getTimer().tick();
+            timerAccumulator = 0.0f;
+        }
     }
 
     if (mouseHandler != nullptr)
@@ -188,6 +198,8 @@ void Minesweeper::Game::startNewGame(const Difficulty& difficulty)
     {
         gameState->startNewGame(difficulty);
     }
+
+    timerAccumulator = 0.0f;
 
     showLeaderboard = false;
 }

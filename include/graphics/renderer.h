@@ -8,6 +8,7 @@
 #include "UIComponents.h"
 #include <memory>
 #include <vector>
+#include <iostream>
 
 namespace Minesweeper {
     class Renderer {
@@ -23,6 +24,9 @@ namespace Minesweeper {
         // Visual settings
         bool showGridLines;
         bool useCheckerboardPattern;
+
+        sf::Font font;
+        bool fontLoaded;
 
     public:
         Renderer();
@@ -54,6 +58,9 @@ namespace Minesweeper {
     private:
         void calculateBoardOffset(int boardWidth, int boardHeight);
         sf::Color getCellColor(const Cell& cell, int x, int y) const;
+
+        void renderCellNumber(const Cell& cell, int x, int y);
+        sf::Color getNumberColor(int number) const;
     };
 }
 

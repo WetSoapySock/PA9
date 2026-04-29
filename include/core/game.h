@@ -28,6 +28,7 @@ namespace Minesweeper
         bool running;
         bool showLeaderboard;
         std::vector<LeaderboardEntry> currentLeaderboard;
+        float timerAccumulator;
 
     public:
         Game();
