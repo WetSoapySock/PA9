@@ -31,3 +31,19 @@ add_executable(PA9
         src/core/gameState.cpp
         src/core/cell.cpp
         src/core/board.cpp )
+
+        include(FetchContent)
+
+FetchContent_Declare(
+    SFML
+    GIT_REPOSITORY https://github.com/SFML/SFML.git
+    GIT_TAG 3.1.0
+)
+
+FetchContent_MakeAvailable(SFML)
+
+target_link_libraries(PA9 PRIVATE
+    SFML::Graphics
+    SFML::Window
+    SFML::System
+)

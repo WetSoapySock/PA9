@@ -1,6 +1,6 @@
 #pragma once
-#include <SFML/Window/Event.hpp>
-#include <SFML/System/Vector2.hpp>
+#include <SFML/Window/Event.h>
+#include <SFML/System/Vector2.h>
 #include <functional>
 #include <unordered_map>
 #include <vector>

@@ -3,8 +3,8 @@
 
 #pragma once
 #include <SFML/Window/Mouse.h>
-#include <SFML/Window/Event.h>
-#include <SFML/System/Vector2.h>
+#include <SFML/Window/Event.hpp>
+#include <SFML/System/Vector2.hpp>
 #include <functional>
 #include <unordered_map>
 #include <vector>

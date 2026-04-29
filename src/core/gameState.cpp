@@ -1,5 +1,5 @@
 
-#include "../include/core/GameState.h"
+#include "../include/core/gameState.h"
 
 Minesweeper::GameState::GameState()
 {
@@ -13,7 +13,7 @@ Minesweeper::GameState::GameState()
 		currentDifficulty.mineCount);
 }
 
-void Minesweeperer::GameState::setStatus(GameStatus newStatus)
+void Minesweeper::GameState::setStatus(GameStatus newStatus)
 {
 	status = newStatus;
 	notifyStateChange();

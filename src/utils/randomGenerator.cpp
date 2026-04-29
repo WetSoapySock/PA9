@@ -24,7 +24,7 @@ bool Minesweeper::RandomGenerator::getBool(double probability)
 		throw std::invalid_argument("Probability must be between 0 and 1");
 	}
 
-	std::bernoilli_distribution dist(probability);
+	std::bernoulli_distribution dist(probability);
 
 	return dist(rng);
 }
