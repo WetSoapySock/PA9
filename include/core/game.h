@@ -28,17 +28,17 @@ namespace Minesweeper {
         std::unique_ptr<MouseHandler> mouseHandler;
         std::unique_ptr<NetworkClient> networkClient;
 
-<<<<<<< HEAD
+
         bool running;
         bool showLeaderboard;
         std::vector<LeaderboardEntry> currentLeaderboard;
         float timerAccumulator;
-=======
+
         // Game state flags
         bool running;                    // Game loop
         bool showLeaderboard;            // Shows leaderboard
         std::vector<LeaderboardEntry> currentLeaderboard; // Cached leaderboard data
->>>>>>> 013d39912e36f98af75281747852ca28ab129b70
+
 
     public:
         Game();
