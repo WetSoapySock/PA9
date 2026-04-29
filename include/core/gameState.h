@@ -6,8 +6,8 @@
 #include <vector>
 #include <functional>
 
-#include "Board.h"
-#include "../utils/Timer.h"
+#include "board.h"
+#include "../utils/timer.h"
 #include "../utils/constants.h"
 
 namespace Minesweeper {
@@ -23,42 +23,47 @@ namespace Minesweeper {
         Board board;
         Timer timer;
         Difficulty currentDifficulty;
-        int score;
         bool firstMove;
 
+        // Callback system for state changes (optional, can be removed if not used)
+        std::vector<std::function<void(GameStatus)>> stateChangeCallbacks;
+
     public:
+        // Constructor and destructor
         GameState();
         ~GameState() = default;
 
-        // State management
+        // Setter
         void setStatus(GameStatus newStatus);
-        GameStatus getStatus() const { return status; }
-        bool isPlaying() const { return status == GameStatus::PLAYING; }
-        bool isGameOver() const { return status == GameStatus::GAME_OVER; }
-        bool isVictory() const { return status == GameStatus::VICTORY; }
 
-        // Game actions
+        // Getter
+        GameStatus getStatus() const {return status;}
+
+        bool isPlaying() const {return status == GameStatus::PLAYING;}
+        bool isGameOver() const {return status == GameStatus::GAME_OVER;}
+        bool isVictory() const {return status == GameStatus::VICTORY;}
+
         void startNewGame(const Difficulty& difficulty);
         void resetGame();
         void handleReveal(int x, int y);
         void handleFlag(int x, int y);
-        void pauseGame();
-        void resumeGame();
 
-        // Accessors
-        Board& getBoard() { return board; }
-        const Board& getBoard() const { return board; }
-        Timer& getTimer() { return timer; }
-        const Timer& getTimer() const { return timer; }
-        Difficulty getDifficulty() const { return currentDifficulty; }
+        Board& getBoard() {return board;}     // Get reference to board
+        const Board& getBoard() const {return board;}   // Get read only reference to board
 
-        // Events
-        using GameEventCallback = std::function<void(GameStatus)>;
-        void onGameStateChange(GameEventCallback callback);
+        Timer& getTimer() {return timer;}     // Get reference to timer
+        const Timer& getTimer() const {return timer;} // Get read only reference to timer
+
+        Difficulty getDifficulty() const {return currentDifficulty;}
+
+        bool isFirstMove() const {return firstMove;}
+
+        // ======================== CALLBACK SYSTEM (Optional) ========================
+        void onGameStateChange(std::function<void(GameStatus)> callback);
 
     private:
-        std::vector<GameEventCallback> stateChangeCallbacks;
         void notifyStateChange();
     };
 }
-#endif //PA9_GAMESTATE_H
+
+#endif // PA9_GAMESTATE_H
