@@ -60,7 +60,7 @@ namespace Minesweeper {
         void setColor(const sf::Color& color);
 
         void draw(sf::RenderWindow& window) override;
-        void update() override {}
+        void update() override;
         bool handleEvent(const sf::Event& event) override { return false; }
     };
 
@@ -79,7 +79,7 @@ namespace Minesweeper {
         void decrement() {setValue(value - 1);}
 
         void draw(sf::RenderWindow& window) override;
-        void update() override {}
+        void update() override;
         bool handleEvent(const sf::Event& event) override {return false;}
     private:
         void updateLabel();  // Format prefix + value

@@ -28,10 +28,6 @@ namespace Minesweeper {
         std::unique_ptr<MouseHandler> mouseHandler;
         std::unique_ptr<NetworkClient> networkClient;
 
-
-        bool running;
-        bool showLeaderboard;
-        std::vector<LeaderboardEntry> currentLeaderboard;
         float timerAccumulator;
 
         // Game state flags
