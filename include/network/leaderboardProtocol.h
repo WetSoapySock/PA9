@@ -6,23 +6,24 @@
 #include <vector>
 #include <sstream>
 
-// CITE AI
 namespace Minesweeper {
 
     struct LeaderboardEntry {
         std::string playerName;
         int seconds;
         std::string difficulty;
-        int rank;
+        int rank;        // Top 10 ranks
     };
 
     enum class SubmitResult {
-        ACCEPTED_TOP_10,
-        REJECTED_NOT_TOP_10,
-        INVALID_SCORE,
-        CONNECTION_FAILED
+        ACCEPTED_TOP_10,       // Player made leaderboard
+        REJECTED_NOT_TOP_10,   // Player did not make top 10
+        INVALID_SCORE,         // >=999 range
+        CONNECTION_FAILED      // Network error
     };
 
+    /**Gen AI, "How can we use the network protocol libraries to create a player leaderboard with network sockets?
+        The server will send back a string with thier name and best time." */
     class LeaderboardProtocol {
     public:
         static std::string formatSubmit(const std::string& name, int seconds, const std::string& difficulty) {

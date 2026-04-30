@@ -3,26 +3,30 @@
 
 #pragma once
 #include <SFML/Graphics.hpp>
+// AI Gen, Libraries
 #include <functional>
 #include <string>
 #include <memory>
 
+/** Gen AI, "Now that we have our sprites, we need to tie them together
+    with the UI. Help create methods for that so we can implment their definitions later" */
+
 namespace Minesweeper {
+
     class UIComponent {
     public:
-        virtual ~UIComponent() = default;
-        virtual void draw(sf::RenderWindow& window) = 0;
-        virtual void update() = 0;
-        virtual bool handleEvent(const sf::Event& event) = 0;
+        virtual ~UIComponent() = default; // Virtual destructor
+        virtual void draw(sf::RenderWindow& window) = 0;       // Render
+        virtual void update() = 0;                             // Update state
+        virtual bool handleEvent(const sf::Event& event) = 0;  // Handle input
     };
-
     class Button : public UIComponent {
     private:
-        sf::RectangleShape shape;
-        std::unique_ptr<sf::Text> label;
-        std::function<void()> onClick;
-        bool hovered;
-        bool pressed;
+        sf::RectangleShape shape;                    // Button background
+        std::unique_ptr<sf::Text> label;             // Button text
+        std::function<void()> onClick;               // Click callback
+        bool hovered;                                // Mouse over flag
+        bool pressed;                                // Pressed flag
 
     public:
         Button();
@@ -40,12 +44,12 @@ namespace Minesweeper {
         bool handleEvent(const sf::Event& event) override;
 
     private:
-        void updateAppearance();
+        void updateAppearance();  // Gen AI: Update colors based on state
     };
 
     class TextLabel : public UIComponent {
     private:
-        std::unique_ptr<sf::Text> text;;
+        std::unique_ptr<sf::Text> text;  // Gen AI: SFML text
 
     public:
         TextLabel();
@@ -56,30 +60,29 @@ namespace Minesweeper {
         void setColor(const sf::Color& color);
 
         void draw(sf::RenderWindow& window) override;
-        void update() override;
+        void update() override {}
         bool handleEvent(const sf::Event& event) override { return false; }
     };
 
     class Counter : public UIComponent {
     private:
-        TextLabel label;
-        int value;
-        std::string prefix;
+        TextLabel label;          // Label for display
+        int value;                // Current value
+        std::string prefix;       // Text prefix
 
     public:
         Counter();
         Counter(const std::string& prefix, const sf::Font& font, int size);
 
         void setValue(int val);
-        void increment() { setValue(value + 1); }
-        void decrement() { setValue(value - 1); }
+        void increment() {setValue(value + 1);}
+        void decrement() {setValue(value - 1);}
 
         void draw(sf::RenderWindow& window) override;
-        void update() override;
-        bool handleEvent(const sf::Event& event) override { return false; }
-
+        void update() override {}
+        bool handleEvent(const sf::Event& event) override {return false;}
     private:
-        void updateLabel();
+        void updateLabel();  // Format prefix + value
     };
 }
 
