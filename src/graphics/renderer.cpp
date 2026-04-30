@@ -1,4 +1,4 @@
-#include "../include/graphics/Renderer.h"
+#include "../include/graphics/renderer.h"
 #include "../include/utils/Constants.h"
 
 Minesweeper::Renderer::Renderer()
