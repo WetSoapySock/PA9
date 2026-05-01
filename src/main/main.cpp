@@ -17,8 +17,8 @@ void printTestResult(const std::string& testName, bool passed) {std::cout << "Te
 // Helper to print board for testing
 void printBoard(Board& board) {
     // Nested loop to iterate through game board
-    for (int y = 1; y <= board.getHeight(); y++) {
-        for (int x = 1; x <= board.getWidth(); x++) {
+    for (int y = 0; y < board.getHeight(); y++) {
+        for (int x = 0; x < board.getWidth(); x++) {
             Cell* cell = board.getCell(x, y);
             if (cell->isFlagged()) {    // Checks if cell is flagged and if so, mark it
                 std::cout << " F ";
@@ -52,8 +52,8 @@ void testBoardInitialization() {
     // Tests if all cells are covered
     bool allCovered = true;
     // Nested loop to itterate through entire board
-    for (int x = 1; x <= board.getWidth(); x++) {
-        for (int y = 1; y <= board.getHeight(); y++) {
+    for (int x = 0; x < board.getWidth(); x++) {
+        for (int y = 0; y < board.getHeight(); y++) {
             if (!board.getCell(x, y)->isCovered()) {
                 allCovered = false;
                 break;
@@ -67,8 +67,8 @@ void testBoardInitialization() {
     board.calculateNumbers();
 
     int mineCount = 0;
-    for (int x = 1; x <= board.getWidth(); x++) {
-        for (int y = 1; y <= board.getHeight(); y++) {
+    for (int x = 0; x < board.getWidth(); x++) {
+        for (int y = 0; y < board.getHeight(); y++) {
             if (board.getCell(x, y)->isMine()) mineCount++;
         }
     }
@@ -164,8 +164,8 @@ void testGameFlow() {
     Board& board = gameState.getBoard();
     int revealed = 0;
     
-    for (int x = 1; x <= board.getWidth(); x++) {       // Nested loop to click all safe cells
-        for (int y = 1; y <= board.getHeight(); y++) {
+    for (int x = 0; x < board.getWidth(); x++) {       // Nested loop to click all safe cells
+        for (int y = 0; y < board.getHeight(); y++) {
             if (!board.getCell(x, y)->isMine() && !board.getCell(x, y)->isRevealed()) {
                 gameState.handleReveal(x, y);
                 revealed++;
