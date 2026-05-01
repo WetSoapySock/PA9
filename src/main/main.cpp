@@ -186,7 +186,10 @@ int main() {
     // Gen AI: Run all test cases
     testBoardInitialization();
     testRevealMechanics();
+<<<<<<< HEAD
+=======
     
+>>>>>>> Dominic's-commits
     testRandomGenerator();
     testNetworkProtocol();
     testGameFlow();
@@ -194,6 +197,15 @@ int main() {
     std::cout << "\n========================================" << std::endl;
     std::cout << "           All Tests Complete           " << std::endl;
     std::cout << "========================================" << std::endl;
+
+    Minesweeper::Game game;// runs the game
+
+    game.initialize(
+        Minesweeper::MIN_WINDOW_WIDTH,
+        Minesweeper::MIN_WINDOW_HEIGHT
+    );
+
+    game.run();
 
     return 0;
 }

@@ -14,6 +14,7 @@
 #include <memory>
 #include <vector>
 #include <string>
+#include <iostream>
 
 /** Gen AI, Help create a class that orchestrates a game loop,
     input, rendering, and network features */

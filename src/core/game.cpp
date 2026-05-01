@@ -44,7 +44,15 @@ bool Minesweeper::Game::initialize(int windowWidth, int windowHeight)
     selectedDifficulty = Difficulty::EASY;
 
     // Optional leaderboard server connection.
-    networkClient->connect("127.0.0.1", 54000);
+    networkClient->connect("127.0.0.1", 8080);
+    if (!networkClient->isConnected())
+    {
+        std::cout << "FAILED TO CONNECT TO SERVER\n";
+    }
+    else
+    {
+        std::cout << "CONNECTED TO SERVER\n";
+    }
 
     running = true;
     return true;
