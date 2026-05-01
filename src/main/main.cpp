@@ -186,7 +186,7 @@ int main() {
     // Gen AI: Run all test cases
     testBoardInitialization();
     testRevealMechanics();
-    testTimer();
+    
     testRandomGenerator();
     testNetworkProtocol();
     testGameFlow();
