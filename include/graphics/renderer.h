@@ -47,13 +47,14 @@ namespace Minesweeper {
         void renderUI();
 
         // Settings
-        void setBoardOffset(int x, int y);
         void setShowGridLines(bool show) { showGridLines = show; }
         void setCheckerboardPattern(bool use) { useCheckerboardPattern = use; }
 
         // Getters
         sf::RenderWindow& getWindow() { return window; }
         const sf::RenderWindow& getWindow() const { return window; }
+        sf::Font& getFont() { return font; }
+        const sf::Font& getFont() const { return font; }
 
     private:
         void calculateBoardOffset(int boardWidth, int boardHeight);

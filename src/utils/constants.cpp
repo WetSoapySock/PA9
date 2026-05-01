@@ -12,7 +12,7 @@ const Minesweeper::Difficulty Minesweeper::Difficulty::MEDIUM =
 
 const Minesweeper::Difficulty Minesweeper::Difficulty::HARD =
 {
-	"Hard", 30, 16, 99
+    "Hard", 30, 16, 99
 };
 
 const Minesweeper::Difficulty Minesweeper::Difficulty::CUSTOM =

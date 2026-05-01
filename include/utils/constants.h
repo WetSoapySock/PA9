@@ -23,8 +23,8 @@ namespace Minesweeper {
     constexpr int MAX_BOARD_SIZE = 30;
 
     // AI Gen, Minimum window width  and height to fit largest board
-    constexpr int MIN_WINDOW_WIDTH = 800;
-    constexpr int MIN_WINDOW_HEIGHT = 600;
+    constexpr int MIN_WINDOW_WIDTH = 1100;
+    constexpr int MIN_WINDOW_HEIGHT = 700;
 
     // AI Gen, Window title displayed
     const std::string WINDOW_TITLE = "Minesweeper";

@@ -19,6 +19,17 @@
     input, rendering, and network features */
 
 namespace Minesweeper {
+    enum class ScreenState // this adds different states for the screen so we can change what is seen
+    {
+        MAIN_MENU,
+        HOW_TO_PLAY,
+        DIFFICULTY_SELECT,
+        LEADERBOARD,
+        NAME_INPUT,
+        PLAYING,
+        GAME_OVER,
+        VICTORY
+    };
     class Game {
     private:
         // Core game components
@@ -34,6 +45,9 @@ namespace Minesweeper {
         bool running;                    // Game loop
         bool showLeaderboard;            // Shows leaderboard
         std::vector<LeaderboardEntry> currentLeaderboard; // Cached leaderboard data
+        ScreenState currentScreen;
+        std::string playerName;
+        Difficulty selectedDifficulty;
 
 
     public:
@@ -65,11 +79,20 @@ namespace Minesweeper {
         void setDifficulty(const Difficulty& difficulty);  // Changes game difficulty
         std::string getDifficultyName() const;             // Returns game difficulty Easy/Medium/Hard
 
+        void onTextEntered(const sf::Event& event);     //Allows User to type name
+
     private:
         // Gen AI, Converts pixels to grid coordinates
         sf::Vector2i screenToBoardPosition(const sf::Vector2i& screenPos) const;
         void renderLeaderboard(); // Render leaderboard overlay
-        void showNameInputDialog(); // Name prompt
+        void renderMenu(); // Main menu (name + difficulty) 
+        void renderGameOver(); // Lose screen 
+        void renderVictory(); // Win screen
+        void renderTimer(); // Displays elapsed time 
+        void renderMineCounter(); // Displays mine count / remaining mines
+        void renderHowToPlay();
+        void renderDifficultySelect();
+        void renderNameInput(); // Name prompt
     };
 }
 
