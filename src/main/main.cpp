@@ -186,6 +186,10 @@ int main() {
     // Gen AI: Run all test cases
     testBoardInitialization();
     testRevealMechanics();
+<<<<<<< HEAD
+=======
+    
+>>>>>>> Dominic's-commits
     testRandomGenerator();
     testNetworkProtocol();
     testGameFlow();
