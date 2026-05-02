@@ -11,47 +11,61 @@
 
 using namespace Minesweeper;
 
-// Prints results from test cases
-void printTestResult(const std::string& testName, bool passed) {std::cout << "Test case: " << testName << "\n" << (passed ? "Passed!" : "Failed!") << "\n";}
+/*
+ Function: printTestResult
+ Description: Helper function that prints the result of a test case.
+              Displays test name and whether it passed or failed.
+              Parameters: testName = description of test being run, passed = boolean result
+*/
+void printTestResult(const std::string& testName, bool passed) {
+    std::cout << "Test case: " << testName << "\n" << (passed ? "Passed!" : "Failed!") << "\n";
+}
 
-// Helper to print board for testing
+/*
+ Function: printBoard
+ Description: Helper function that prints the current state of the game board
+              to the console for debugging purposes. Shows flags (F), mines (*),
+              numbers (1-8), empty cells (.), and covered cells (?).
+              Parameters: board = reference to board to display
+*/
 void printBoard(Board& board) {
-    // Nested loop to iterate through game board
     for (int y = 0; y < board.getHeight(); y++) {
         for (int x = 0; x < board.getWidth(); x++) {
             Cell* cell = board.getCell(x, y);
-            if (cell->isFlagged()) {    // Checks if cell is flagged and if so, mark it
+            if (cell->isFlagged()) {
                 std::cout << " F ";
-            } else if (cell->isRevealed()) {    // Checks if the cell is revealed then check if it is safe or a mine
+            } else if (cell->isRevealed()) {
                 if (cell->isMine()) {
-                    std::cout << " * ";  // Mine marked with asterisk
+                    std::cout << " * ";
                 } else {
-                    int num = cell->getNumber();    // Prints cell number, if 0, prints a dot for empty space
+                    int num = cell->getNumber();
                     std::cout << " " << (num == 0 ? '.' : char('0' + num)) << " ";
                 }
             } else {
-                std::cout << " ? ";     // Unknown cell
+                std::cout << " ? ";
             }
         }
         std::cout << std::endl;
     }
 }
 
-// Test case 1: Tests board initialization and mine placement to verify if board creates correct dimensions and mine count
+/*
+ Function: testBoardInitialization
+ Description: Test case 1 - Verifies board is created with correct dimensions
+              and mine count. Checks that all cells start covered, mines are
+              placed correctly, and first click cell is safe.
+*/
 void testBoardInitialization() {
     std::cout << "\nTest 1: Board Initialization" << "\n";
 
-    Board board(9, 9, 10);      // Create an easy board with 10 mines
+    Board board(9, 9, 10);
 
-    // Tests for proper dimensions
     printTestResult("Board width = 9", board.getWidth() == 9);
     printTestResult("Board height = 9", board.getHeight() == 9);
     printTestResult("Total mines = 10", board.getTotalMines() == 10);
     printTestResult("Total cells = 81", board.getTotalCells() == 81);
 
-    // Tests if all cells are covered
     bool allCovered = true;
-    // Nested loop to itterate through entire board
     for (int x = 0; x < board.getWidth(); x++) {
         for (int y = 0; y < board.getHeight(); y++) {
             if (!board.getCell(x, y)->isCovered()) {
@@ -62,8 +76,7 @@ void testBoardInitialization() {
     }
     printTestResult("All cells start are COVERED", allCovered);
 
-    // Checks if mines are placed on first click and if they were plaed properly
-    board.placeMines(5, 5);  // Gen AI: Safe cell at (5,5)
+    board.placeMines(5, 5);
     board.calculateNumbers();
 
     int mineCount = 0;
@@ -76,7 +89,12 @@ void testBoardInitialization() {
     printTestResult("First click cell is safe", !board.getCell(5, 5)->isMine());
 }
 
-// Test case 2: Tests cell revealing and flood fill mechanics
+/*
+ Function: testRevealMechanics
+ Description: Test case 2 - Verifies cell reveal logic works correctly.
+              Checks that revealing a safe cell returns false and that
+              the cell becomes revealed after clicking.
+*/
 void testRevealMechanics() {
     std::cout << "\nTest 2: Reveal Mechanics" << "\n";
 
@@ -87,14 +105,17 @@ void testRevealMechanics() {
     bool hitMine = board.revealCell(5, 5);
     printTestResult("Reveal safe cell returns false (no mine)", !hitMine);
     printTestResult("Cell becomes REVEALED", board.getCell(5, 5)->isRevealed());
-
 }
 
-// Test case 3: Tests random number generator
+/*
+ Function: testRandomGenerator
+ Description: Test case 3 - Verifies random number generator produces
+              integers within the specified range. Ensures getInt() returns
+              values between min and max inclusive.
+*/
 void testRandomGenerator() {
-    std::cout << "\nTest 2: Random Generator" << "\n";
+    std::cout << "\nTest 3: Random Generator" << "\n";
 
-    // Tests integer range [1, 10]
     RandomGenerator rng;
     std::vector<int> intResults;
     for (int i = 0; i < 100; i++) {
@@ -112,21 +133,22 @@ void testRandomGenerator() {
     printTestResult("getInt(1,10) returns values in range", inRange);
 }
 
-// Test Case 4: Tests network protocol formatting and parsing to verify leaderboard protocol commands
-/** Gen AI, "I'm struggling with the arguments to test the network functionality. Can you help me
-    send a leaderboard score submission, fetch a score, and parse the data?" */
+/*
+ Function: testNetworkProtocol
+ Description: Test case 4 - Verifies network protocol formatting and parsing.
+              Tests SUBMIT command format, GET command format, and leaderboard
+              data parsing. Uses hardcoded data to avoid actual network calls.
+              Gen AI assistance: Helped with arguments for testing network functionality.
+*/
 void testNetworkProtocol() {
     std::cout << "\nTest 4: Network Protocol" << "\n";
 
-    // Submit testing
     std::string submitCmd = LeaderboardProtocol::formatSubmit("Alice", 45, "Easy");
     printTestResult("SUBMIT format: \"SUBMIT:Alice:45:Easy\\n\"", submitCmd == "SUBMIT:Alice:45:Easy\n");
 
-    // Fetch testing
     std::string getCmd = LeaderboardProtocol::formatGet("Medium");
-    printTestResult("GET format: \"GET:Medium\\n\"",getCmd == "GET:Medium\n");
+    printTestResult("GET format: \"GET:Medium\\n\"", getCmd == "GET:Medium\n");
 
-    // Parse testing
     std::string leaderboardData = "1.Alice:45\n2.Bob:67\n3.Carol:89\n";
     auto entries = LeaderboardProtocol::parseLeaderboard(leaderboardData, "Easy");
 
@@ -144,27 +166,29 @@ void testNetworkProtocol() {
     }
 }
 
-// Test 5: Tests for full game integration
+/*
+ Function: testGameFlow
+ Description: Test case 5 - Tests full game integration from start to victory.
+              Verifies game starts in PLAYING state, timer starts on first click,
+              and victory is detected after revealing all safe cells.
+*/
 void testGameFlow() {
     std::cout << "\nTest 5: Game Flow Integration" << "\n";
 
-    // Create a new game state for testing
     GameState gameState;
     gameState.startNewGame(Difficulty::EASY);
 
     printTestResult("Game starts in PLAYING state", gameState.isPlaying());
     printTestResult("First move flag is true", gameState.isFirstMove());
 
-    // Simulates the first click at (5,5)
     gameState.handleReveal(5, 5);
     printTestResult("After first click, timer started", gameState.getTimer().hasStarted());
     printTestResult("First move flag becomes false", !gameState.isFirstMove());
 
-    // "Solves the game," but not really because it's all in the back end.
     Board& board = gameState.getBoard();
     int revealed = 0;
     
-    for (int x = 0; x < board.getWidth(); x++) {       // Nested loop to click all safe cells
+    for (int x = 0; x < board.getWidth(); x++) {
         for (int y = 0; y < board.getHeight(); y++) {
             if (!board.getCell(x, y)->isMine() && !board.getCell(x, y)->isRevealed()) {
                 gameState.handleReveal(x, y);
@@ -177,16 +201,19 @@ void testGameFlow() {
     printTestResult("Timer stops on victory", !gameState.getTimer().isRunning());
 }
 
-// ======================== MAIN ========================
+/*
+ Function: main
+ Description: Entry point for the Minesweeper application. Runs all test cases
+              to verify game functionality, then launches the full game with
+              the main window. Handles game initialization and execution.
+*/
 int main() {
     std::cout << "========================================" << std::endl;
     std::cout << "   Minesweeper Test Suite v1.0         " << std::endl;
     std::cout << "========================================" << std::endl;
 
-    // Gen AI: Run all test cases
     testBoardInitialization();
     testRevealMechanics();
-
     testRandomGenerator();
     testNetworkProtocol();
     testGameFlow();
@@ -195,7 +222,7 @@ int main() {
     std::cout << "           All Tests Complete           " << std::endl;
     std::cout << "========================================" << std::endl;
 
-    Minesweeper::Game game;// runs the game
+    Minesweeper::Game game;
 
     game.initialize(
         Minesweeper::MIN_WINDOW_WIDTH,
