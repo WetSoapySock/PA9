@@ -31,17 +31,10 @@ namespace Minesweeper {
         std::string dataFile;
 
     public:
-        LeaderboardServer() : serverSocket(INVALID_SOCKET), isRunning(false), dataFile("leaderboard.txt") {
-            WSADATA wsaData;
-            WSAStartup(MAKEWORD(2, 2), &wsaData);
-            loadFromFile();
-        }
+        LeaderboardServer();
+        ~LeaderboardServer();
 
-        ~LeaderboardServer() {
-            stop();
-            WSACleanup();
-        }
-
+        int getRankForScore(const std::string& difficulty, int seconds);
         bool start(int port = 8080);
         void stop();
         void run();

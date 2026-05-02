@@ -1,4 +1,4 @@
-#include "LeaderboardServer.hpp"
+#include "leaderboardServer.h"
 #include <iostream>
 #include <sstream>
 #include <algorithm>
@@ -9,32 +9,37 @@ namespace Minesweeper {
     // ======================== CONSTRUCTOR & DESTRUCTOR ========================
 
     LeaderboardServer::LeaderboardServer()
-        : serverSocket(INVALID_SOCKET)
-        , isRunning(false)
-        , dataFile("leaderboard.txt") {
-
-        // Initialize Winsock (required for Windows networking)
+        : serverSocket(INVALID_SOCKET),
+        isRunning(false),
+        dataFile("leaderboard.txt")
+    {
         WSADATA wsaData;
-        if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0) {
-            std::cerr << "[ERROR] WSAStartup failed" << std::endl;
+        int result = WSAStartup(MAKEWORD(2, 2), &wsaData);
+
+        if (result != 0)
+        {
+            std::cerr << "[ERROR] WSAStartup failed with code: " << result << std::endl;
+            return;
         }
 
-        // Load existing scores from file
         loadFromFile();
     }
 
-    LeaderboardServer::~LeaderboardServer() {
+    LeaderboardServer::~LeaderboardServer()
+    {
         stop();
         WSACleanup();
     }
-
     // ======================== SERVER LIFECYCLE ========================
 
     bool LeaderboardServer::start(int port) {
         // Create TCP socket
         serverSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-        if (serverSocket == INVALID_SOCKET) {
-            std::cerr << "[ERROR] Failed to create socket" << std::endl;
+
+        if (serverSocket == INVALID_SOCKET)
+        {
+            std::cerr << "[ERROR] Failed to create socket. WSA error: "
+                << WSAGetLastError() << std::endl;
             return false;
         }
 
@@ -299,6 +304,7 @@ namespace Minesweeper {
         return count;
     }
 
+
     int LeaderboardServer::getRankForScore(const std::string& difficulty, int seconds) {
         std::lock_guard<std::mutex> lock(dataMutex);
 
@@ -311,7 +317,11 @@ namespace Minesweeper {
                 rank++;
             }
         }
-        return std::min(rank, 11);  // 11 = not in top 10
+        if (rank < 11)
+        {
+            return rank;
+        }
+        return 11;  // 11 = not in top 10
     }
 
     // ======================== PERSISTENT STORAGE ========================

@@ -16,3 +16,4 @@ This project is a simple Minesweeper game built as part of CPT_S 122. Our minesw
   - Left-click to reveal cells
   - Right-click to flag or unflag cells
   - Realt time mine counter and timer
+	- https://youtu.be/Fys7z_Bwp8o

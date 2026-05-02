@@ -49,3 +49,7 @@ target_link_libraries(PA9 PRIVATE
 )
 
 file(COPY ${CMAKE_SOURCE_DIR}/assets DESTINATION ${CMAKE_BINARY_DIR})
+
+add_executable(ServerApp
+    server/leaderboardServer.cpp
+)
