@@ -1,7 +1,10 @@
 #include "../include/graphics/UIComponents.h"
 
-// ==================== Button ====================
-
+/*
+ Function: Button (default constructor)
+ Description: Initializes button with default state: not hovered, not pressed,
+              no click callback, and null label pointer.
+*/
 Minesweeper::Button::Button()
 {
     hovered = false;
@@ -10,6 +13,13 @@ Minesweeper::Button::Button()
     label = nullptr;
 }
 
+/*
+ Function: Button (parameterized constructor)
+ Description: Creates a button with specified text, font, position, and size.
+              Centers the text within the button bounds automatically.
+              Parameters: text = button label, font = SFML font object,
+              position = top-left coordinates, size = width and height in pixels
+*/
 Minesweeper::Button::Button(const std::string& text,
     const sf::Font& font,
     const sf::Vector2f& position,
@@ -34,6 +44,12 @@ Minesweeper::Button::Button(const std::string& text,
     ));
 }
 
+/*
+ Function: setText
+ Description: Changes the button's displayed text. Updates the internal
+              label string while preserving all other text properties.
+              Parameters: text = new button label string
+*/
 void Minesweeper::Button::setText(const std::string& text)
 {
     if (label != nullptr)
@@ -42,6 +58,12 @@ void Minesweeper::Button::setText(const std::string& text)
     }
 }
 
+/*
+ Function: setPosition
+ Description: Moves the button to a new position on screen. Updates both
+              the button shape and its centered text label.
+              Parameters: position = new top-left coordinates
+*/
 void Minesweeper::Button::setPosition(const sf::Vector2f& position)
 {
     shape.setPosition(position);
@@ -52,16 +74,32 @@ void Minesweeper::Button::setPosition(const sf::Vector2f& position)
     }
 }
 
+/*
+ Function: setSize
+ Description: Resizes the button rectangle. Does not automatically re-center text.
+              Parameters: size = new width and height in pixels
+*/
 void Minesweeper::Button::setSize(const sf::Vector2f& size)
 {
     shape.setSize(size);
 }
 
+/*
+ Function: setColor
+ Description: Changes the button's background color.
+              Parameters: color = new SFML color for button fill
+*/
 void Minesweeper::Button::setColor(const sf::Color& color)
 {
     shape.setFillColor(color);
 }
 
+/*
+ Function: draw
+ Description: Renders the button to the window. Draws the shape rectangle
+              first, then the text label on top.
+              Parameters: window = SFML render window to draw on
+*/
 void Minesweeper::Button::draw(sf::RenderWindow& window)
 {
     window.draw(shape);
@@ -72,11 +110,22 @@ void Minesweeper::Button::draw(sf::RenderWindow& window)
     }
 }
 
+/*
+ Function: update
+ Description: Updates button state each frame. Currently just updates
+              appearance based on hover/pressed state.
+*/
 void Minesweeper::Button::update()
 {
     updateAppearance();
 }
 
+/*
+ Function: handleEvent
+ Description: Processes mouse events for button interaction. Handles hover detection,
+              press state tracking, and click callbacks. Returns true if event was consumed.
+              Parameters: event = SFML event to process (mouse move, press, release)
+*/
 bool Minesweeper::Button::handleEvent(const sf::Event& event)
 {
     if (const auto* mouse = event.getIf<sf::Event::MouseMoved>())
@@ -130,6 +179,11 @@ bool Minesweeper::Button::handleEvent(const sf::Event& event)
     return false;
 }
 
+/*
+ Function: updateAppearance
+ Description: Internal helper that changes button color based on state.
+              Pressed = dark gray, Hovered = light gray, Normal = medium gray.
+*/
 void Minesweeper::Button::updateAppearance()
 {
     if (pressed)
@@ -146,13 +200,21 @@ void Minesweeper::Button::updateAppearance()
     }
 }
 
-// ==================== TextLabel ====================
-
+/*
+ Function: TextLabel (default constructor)
+ Description: Initializes empty text label with null text pointer.
+*/
 Minesweeper::TextLabel::TextLabel()
 {
     text = nullptr;
 }
 
+/*
+ Function: TextLabel (parameterized constructor)
+ Description: Creates a text label with specified content, font, and size.
+              Sets default text color to white.
+              Parameters: content = displayed string, font = SFML font object, size = font size in pixels
+*/
 Minesweeper::TextLabel::TextLabel(const std::string& content,
     const sf::Font& font,
     int size)
@@ -161,6 +223,11 @@ Minesweeper::TextLabel::TextLabel(const std::string& content,
     text->setFillColor(sf::Color::White);
 }
 
+/*
+ Function: setString
+ Description: Changes the displayed text content of the label.
+              Parameters: str = new text string to display
+*/
 void Minesweeper::TextLabel::setString(const std::string& str)
 {
     if (text != nullptr)
@@ -169,6 +236,11 @@ void Minesweeper::TextLabel::setString(const std::string& str)
     }
 }
 
+/*
+ Function: setPosition
+ Description: Moves the text label to a new screen position.
+              Parameters: position = new top-left coordinates for text
+*/
 void Minesweeper::TextLabel::setPosition(const sf::Vector2f& position)
 {
     if (text != nullptr)
@@ -177,6 +249,11 @@ void Minesweeper::TextLabel::setPosition(const sf::Vector2f& position)
     }
 }
 
+/*
+ Function: setColor
+ Description: Changes the text color of the label.
+              Parameters: color = new SFML color for the text
+*/
 void Minesweeper::TextLabel::setColor(const sf::Color& color)
 {
     if (text != nullptr)
@@ -185,6 +262,11 @@ void Minesweeper::TextLabel::setColor(const sf::Color& color)
     }
 }
 
+/*
+ Function: draw
+ Description: Renders the text label to the window.
+              Parameters: window = SFML render window to draw on
+*/
 void Minesweeper::TextLabel::draw(sf::RenderWindow& window)
 {
     if (text != nullptr)
@@ -193,19 +275,33 @@ void Minesweeper::TextLabel::draw(sf::RenderWindow& window)
     }
 }
 
+/*
+ Function: update
+ Description: Placeholder update function for text label. No state to update.
+*/
 void Minesweeper::TextLabel::update()
 {
     // Nothing needed for now
 }
 
-// ==================== Counter ====================
+// ======================== COUNTER CLASS ========================
 
+/*
+ Function: Counter (default constructor)
+ Description: Initializes counter with zero value and empty prefix.
+*/
 Minesweeper::Counter::Counter()
 {
     value = 0;
     prefix = "";
 }
 
+/*
+ Function: Counter (parameterized constructor)
+ Description: Creates a counter display with prefix (e.g., "Mines: ") and
+              initial value of 0. Uses the provided font and size.
+              Parameters: newPrefix = text before the number, font = SFML font, size = font size
+*/
 Minesweeper::Counter::Counter(const std::string& newPrefix,
     const sf::Font& font,
     int size)
@@ -215,22 +311,41 @@ Minesweeper::Counter::Counter(const std::string& newPrefix,
     prefix = newPrefix;
 }
 
+/*
+ Function: setValue
+ Description: Updates the counter's numeric value and refreshes the display text.
+              Parameters: val = new integer value to display
+*/
 void Minesweeper::Counter::setValue(int val)
 {
     value = val;
     updateLabel();
 }
 
+/*
+ Function: draw
+ Description: Renders the counter label to the window.
+              Parameters: window = SFML render window to draw on
+*/
 void Minesweeper::Counter::draw(sf::RenderWindow& window)
 {
     label.draw(window);
 }
 
+/*
+ Function: update
+ Description: Updates the counter state each frame. Delegates to label update.
+*/
 void Minesweeper::Counter::update()
 {
     label.update();
 }
 
+/*
+ Function: updateLabel
+ Description: Internal helper that refreshes the display text by combining
+              prefix with current value (e.g., "Mines: 10").
+*/
 void Minesweeper::Counter::updateLabel()
 {
     label.setString(prefix + std::to_string(value));
