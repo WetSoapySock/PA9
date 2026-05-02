@@ -1,734 +1,347 @@
-#include "../include/core/game.h"
-#include <SFML/System/Clock.hpp>
-
+#include "../include/core/board.h"
+#include <cstdlib>
+#include <ctime>
+#include <cstddef>
 
 /*
- Function: Game
- Description: Constructor. Sets all pointers to nullptr and initializes
-              the starting screen, player name, selected difficulty, and flags.
+ Function: Board (default constructor)
+ Description: Initializes an empty board with zero dimensions, no mines,
+              and sets the minesPlaced flag to false. Called before proper
+              initialization via initialize().
 */
-Minesweeper::Game::Game()
-{
-    gameState = nullptr;
-    renderer = nullptr;
-    mouseHandler = nullptr;
-    networkClient = nullptr;
+Minesweeper::Board::Board() {
+    width = 0;
+    height = 0;
+    totalMines = 0;
+    flaggedMines = 0;
+    revealedCells = 0;
+    minesPlaced = false;
+}
 
-    running = false;
-    showLeaderboard = false;
-
-    timerAccumulator = 0.0f;
-
-    currentScreen = ScreenState::MAIN_MENU;
-    playerName = "Player";
-    selectedDifficulty = Difficulty::EASY;
+/*
+ Function: Board (parameterized constructor)
+ Description: Creates a board with specified dimensions and mine count.
+              Delegates initialization to the initialize() method.
+              Parameters: w = width (columns), h = height (rows), mines = number of mines
+*/
+Minesweeper::Board::Board(int w, int h, int mines) {
+    initialize(w, h, mines);
 }
 
 /*
  Function: initialize
- Description: Creates the main game objects and initializes the renderer/window.
+ Description: Sets up the board with given dimensions and mine count.
+              Creates a 2D vector of Cell objects, clears any existing data,
+              seeds the random number generator, and resets all counters.
+              Parameters: w = width, h = height, mines = total mines to place
 */
-bool Minesweeper::Game::initialize(int windowWidth, int windowHeight)
-{
-    gameState = std::make_unique<GameState>();
-    renderer = std::make_unique<Renderer>();
-    mouseHandler = std::make_unique<MouseHandler>();
-    networkClient = std::make_unique<NetworkClient>();
+void Minesweeper::Board::initialize(int w, int h, int mines) {
+    width = w;
+    height = h;
+    totalMines = mines;
+    flaggedMines = 0;
+    revealedCells = 0;
+    minesPlaced = false;
 
-    if (!renderer->initialize(windowWidth, windowHeight, WINDOW_TITLE))
-    {
+    cells.clear();
+
+    for (int row = 0; row < height; row++) {
+        std::vector<Cell> newRow;
+
+        for (int col = 0; col < width; col++) {
+            newRow.push_back(Cell(col, row));
+        }
+        cells.push_back(newRow);
+    }
+    srand((unsigned int)time(nullptr));
+}
+
+/*
+ Function: reset
+ Description: Resets the board to initial state for a new game.
+              Preserves dimensions and mine count but clears all flags,
+              revealed cells, and resets every cell to covered/empty.
+*/
+void Minesweeper::Board::reset() {
+    flaggedMines = 0;
+    revealedCells = 0;
+    minesPlaced = false;
+
+    for (int row = 0; row < height; row++) {
+        for (int col = 0; col < width; col++) {
+            cells[row][col].reset();
+        }
+    }
+}
+
+/*
+ Function: isValidPosition
+ Description: Checks whether the given coordinates are within the board bounds.
+              Returns true if x is between 0 and width-1, and y is between 0 and height-1.
+              Parameters: x = column, y = row
+*/
+bool Minesweeper::Board::isValidPosition(int x, int y) const {
+    return x >= 0 && x < width && y >= 0 && y < height;
+}
+
+/*
+ Function: getCell (non-const)
+ Description: Returns a mutable pointer to the cell at the specified coordinates.
+              Returns nullptr if coordinates are invalid. Used for modifying cells.
+              Parameters: x = column, y = row
+*/
+Minesweeper::Cell* Minesweeper::Board::getCell(int x, int y) {
+    if (isValidPosition(x, y)) {
+        return &cells[y][x];
+    }
+    return nullptr;
+}
+
+/*
+ Function: getCell (const)
+ Description: Returns a read-only const pointer to the cell at specified coordinates.
+              Returns nullptr if coordinates are invalid. Used for rendering and queries.
+              Parameters: x = column, y = row
+*/
+const Minesweeper::Cell* Minesweeper::Board::getCell(int x, int y) const {
+    if (isValidPosition(x, y)) {
+        return &cells[y][x];
+    }
+    return nullptr;
+}
+
+/*
+ Function: placeMines
+ Description: Randomly distributes mines across the board while guaranteeing
+              the first clicked cell (safeX, safeY) contains no mine.
+              Places exactly totalMines mines. After placement, calls calculateNumbers().
+              Parameters: safeX, safeY = coordinates of first player click
+*/
+void Minesweeper::Board::placeMines(int safeX, int safeY) {
+    int count = 0;
+
+    while (count < totalMines) {
+        int x = rand() % width;
+        int y = rand() % height;
+
+        if (x == safeX && y == safeY) continue;
+
+        if (!cells[y][x].isMine()) {
+            cells[y][x].setType(CellType::MINE);
+            count++;
+        }
+    }
+
+    minesPlaced = true;
+    calculateNumbers();
+}
+
+/*
+ Function: calculateNumbers
+ Description: Iterates through every non-mine cell and sets its number to the
+              count of adjacent mines (0-8). Cells with 0 become EMPTY type.
+*/
+void Minesweeper::Board::calculateNumbers() {
+    for (int y = 0; y < height; y++) {
+        for (int x = 0; x < width; x++) {
+            if (!cells[y][x].isMine()) {
+                int count = getAdjacentMineCount(x, y);
+                cells[y][x].setNumber(count);
+            }
+        }
+    }
+}
+
+/*
+ Function: getAdjacentMineCount
+ Description: Counts how many mines are in the 8 neighboring cells of position (x,y).
+              Uses the directions array to check all adjacent positions.
+              Parameters: x, y = coordinates to check
+*/
+int Minesweeper::Board::getAdjacentMineCount(int x, int y) const {
+    int count = 0;
+
+    for (size_t i = 0; i < directions.size(); i++) {
+        int newX = x + directions[i].first;
+        int newY = y + directions[i].second;
+
+        if (isValidPosition(newX, newY) && cells[newY][newX].isMine()) {
+            count++;
+        }
+    }
+    return count;
+}
+
+/*
+ Function: revealCell
+ Description: Handles left-click reveal logic. If mines not placed yet, places them
+              with current cell as safe. Reveals the cell and checks for mine hit.
+              Returns true if mine was revealed (game over), false otherwise.
+              Triggers flood fill for empty cells (number == 0).
+              Parameters: x, y = coordinates to reveal
+*/
+bool Minesweeper::Board::revealCell(int x, int y) {
+    if (!isValidPosition(x, y)) {
         return false;
     }
 
-    // Start with Easy selected, but stay on the main menu.
-    selectedDifficulty = Difficulty::EASY;
-
-    // Optional leaderboard server connection.
-    networkClient->connect("127.0.0.1", 8080);
-    if (!networkClient->isConnected())
-    {
-        std::cout << "FAILED TO CONNECT TO SERVER\n";
-    }
-    else
-    {
-        std::cout << "CONNECTED TO SERVER\n";
+    if (!minesPlaced) {
+        placeMines(x, y);
     }
 
-    running = true;
-    return true;
+    Cell& cell = cells[y][x];
+
+    if (cell.isRevealed() || cell.isFlagged()) {
+        return false;
+    }
+
+    cell.reveal();
+
+    if (cell.isMine()) {
+        revealAllMines();
+        return true;
+    }
+    revealedCells++;
+
+    if (cell.getNumber() == 0) {
+        revealArea(x, y);
+    }
+    
+    return false;
 }
 
 /*
- Function: run
- Description: Main game loop. Processes input, updates logic, and renders.
+ Function: revealArea
+ Description: Flood fill algorithm that recursively reveals all connected empty cells
+              (cells with 0 adjacent mines). Also reveals numbered cells adjacent to
+              empty areas. Uses DFS approach through neighbor directions.
+              Parameters: x, y = starting coordinates for flood fill
 */
-void Minesweeper::Game::run()
-{
-    sf::Clock clock;
+void Minesweeper::Board::revealArea(int x, int y) {
+    for (size_t i = 0; i < directions.size(); i++) {
+        int newX = x + directions[i].first;
+        int newY = y + directions[i].second;
 
-    while (running && renderer->isOpen())
-    {
-        float deltaTime = clock.restart().asSeconds();
+        if (isValidPosition(newX, newY)) {
+            Cell& neighbor = cells[newY][newX];
 
-        processInput();
-        update(deltaTime);
-        render();
-    }
-}
+            if (!neighbor.isRevealed() && !neighbor.isFlagged() && !neighbor.isMine()) {
+                neighbor.reveal();
+                revealedCells++;
 
-/*
- Function: shutdown
- Description: Stops the game loop and closes the window.
-*/
-void Minesweeper::Game::shutdown()
-{
-    running = false;
-
-    if (renderer != nullptr)
-    {
-        renderer->close();
-    }
-}
-
-/*
- Function: processInput
- Description: Reads SFML events and sends them to the correct handler.
-*/
-void Minesweeper::Game::processInput()
-{
-    while (auto event = renderer->getWindow().pollEvent())
-    {
-        mouseHandler->update(*event);
-
-        if (event->is<sf::Event::Closed>())
-        {
-            shutdown();
-        }
-
-        if (event->is<sf::Event::MouseButtonPressed>())
-        {
-            onMouseClick(*event);
-        }
-
-        if (event->is<sf::Event::KeyPressed>())
-        {
-            onKeyPress(*event);
-        }
-
-        // Needed for typing the player name.
-        if (event->is<sf::Event::TextEntered>())
-        {
-            onTextEntered(*event);
-        }
-
-        if (event->is<sf::Event::Resized>())
-        {
-            onWindowResize(*event);
-        }
-    }
-}
-
-/*
- Function: update
- Description: Updates the game timer once per second while the game is active.
-*/
-void Minesweeper::Game::update(float deltaTime)
-{
-    if (gameState != nullptr &&
-        gameState->isPlaying() &&
-        gameState->getTimer().isRunning())
-    {
-        timerAccumulator += deltaTime;
-
-        // Timer only ticks once every full second.
-        if (timerAccumulator >= 1.0f)
-        {
-            gameState->getTimer().tick();
-            timerAccumulator = 0.0f;
-        }
-    }
-
-    if (mouseHandler != nullptr)
-    {
-        mouseHandler->update();
-    }
-}
-
-/*
- Function: render
- Description: Draws a different screen depending on currentScreen.
-*/
-void Minesweeper::Game::render()
-{
-    renderer->clear();
-
-    switch (currentScreen)
-    {
-    case ScreenState::MAIN_MENU:
-        renderMenu();
-        break;
-
-    case ScreenState::HOW_TO_PLAY:
-        renderHowToPlay();
-        break;
-
-    case ScreenState::DIFFICULTY_SELECT:
-        renderDifficultySelect();
-        break;
-
-    case ScreenState::LEADERBOARD:
-        renderLeaderboard();
-        break;
-
-    case ScreenState::NAME_INPUT:
-        renderNameInput();
-        break;
-
-    case ScreenState::PLAYING:
-        renderer->renderBoard(gameState->getBoard());
-        renderTimer();
-        renderMineCounter();
-        break;
-
-    case ScreenState::GAME_OVER:
-        renderGameOver();
-        break;
-
-    case ScreenState::VICTORY:
-        renderVictory();
-        break;
-    }
-
-    renderer->display();
-}
-
-/*
- Function: onMouseClick
- Description: Handles board clicks only while the game is being played.
-*/
-void Minesweeper::Game::onMouseClick(const sf::Event& event)
-{
-    const auto* mouse = event.getIf<sf::Event::MouseButtonPressed>();
-
-    if (mouse == nullptr || gameState == nullptr)
-    {
-        return;
-    }
-
-    // Do not let menu clicks affect the board.
-    if (currentScreen != ScreenState::PLAYING)
-    {
-        return;
-    }
-
-    sf::Vector2i boardPosition = screenToBoardPosition(mouse->position);
-
-    if (boardPosition.x == -1 || boardPosition.y == -1)
-    {
-        return;
-    }
-
-    if (mouse->button == sf::Mouse::Button::Left)
-    {
-        gameState->handleReveal(boardPosition.x, boardPosition.y);
-
-        if (gameState->isVictory())
-        {
-            submitScoreToLeaderboard();
-            currentScreen = ScreenState::VICTORY;
-        }
-        else if (gameState->isGameOver())
-        {
-            currentScreen = ScreenState::GAME_OVER;
-        }
-    }
-    else if (mouse->button == sf::Mouse::Button::Right)
-    {
-        gameState->handleFlag(boardPosition.x, boardPosition.y);
-    }
-}
-
-/*
- Function: onKeyPress
- Description: Handles keyboard controls for menu navigation and gameplay.
-*/
-void Minesweeper::Game::onKeyPress(const sf::Event& event)
-{
-    const auto* key = event.getIf<sf::Event::KeyPressed>();
-
-    if (key == nullptr)
-    {
-        return;
-    }
-    if (currentScreen == ScreenState::NAME_INPUT)
-    {
-        const auto* key = event.getIf<sf::Event::KeyPressed>();
-
-        if (key != nullptr)
-        {
-            // Allow only Enter and Escape while typing name
-            if (key->code == sf::Keyboard::Key::Enter)
-            {
-                if (playerName.empty())
-                {
-                    playerName = "Player";
+                if (neighbor.getNumber() == 0) {
+                    revealArea(newX, newY);
                 }
-
-                currentScreen = ScreenState::MAIN_MENU;
-            }
-            else if (key->code == sf::Keyboard::Key::Escape)
-            {
-                currentScreen = ScreenState::MAIN_MENU;
             }
         }
+    }
+}
 
-        return; 
-    }
+/*
+ Function: toggleFlag
+ Description: Handles right-click flag placement and removal. Toggles cell state
+              between COVERED and FLAGGED. Updates flaggedMines counter accordingly.
+              Cannot flag already revealed cells.
+              Parameters: x, y = coordinates to toggle flag
+*/
+void Minesweeper::Board::toggleFlag(int x, int y) {
+    if (!isValidPosition(x, y)) return;
 
-    if (key->code == sf::Keyboard::Key::Escape)
-    {
-        shutdown();
-    }
-    else if (key->code == sf::Keyboard::Key::M)
-    {
-        currentScreen = ScreenState::MAIN_MENU;
-    }
-    else if (key->code == sf::Keyboard::Key::Enter)
-    {
-        if (currentScreen == ScreenState::MAIN_MENU)
-        {
-            startNewGame(selectedDifficulty);
-            currentScreen = ScreenState::PLAYING;
-        }
-    }
-    else if (key->code == sf::Keyboard::Key::H)
-    {
-        currentScreen = ScreenState::HOW_TO_PLAY;
-    }
-    else if (key->code == sf::Keyboard::Key::D)
-    {
-        currentScreen = ScreenState::DIFFICULTY_SELECT;
-    }
-    else if (key->code == sf::Keyboard::Key::N)
-    {
-        currentScreen = ScreenState::NAME_INPUT;
-    }
-    else if (key->code == sf::Keyboard::Key::L)
-    {
-        showLeaderboardUI();
-        currentScreen = ScreenState::LEADERBOARD;
-    }
-    else if (key->code == sf::Keyboard::Key::R)
-    {
-        startNewGame(selectedDifficulty);
-        currentScreen = ScreenState::PLAYING;
+    Cell& cell = cells[y][x];
+
+    if (cell.isRevealed()) return;
+    
+    if (cell.isFlagged()) {
+        flaggedMines--;
+    } else {
+        flaggedMines++;
     }
 
-    // Difficulty screen controls.
-    if (currentScreen == ScreenState::DIFFICULTY_SELECT)
-    {
-        if (key->code == sf::Keyboard::Key::Num1)
-        {
-            selectedDifficulty = Difficulty::EASY;
-        }
-        else if (key->code == sf::Keyboard::Key::Num2)
-        {
-            selectedDifficulty = Difficulty::MEDIUM;
-        }
-        else if (key->code == sf::Keyboard::Key::Num3)
-        {
-            selectedDifficulty = Difficulty::HARD;
+    cell.toggleFlag();
+}
+
+/*
+ Function: revealAllMines
+ Description: Reveals all mine cells on the board. Called when player loses
+              (hits a mine) to show where all mines were located.
+*/
+void Minesweeper::Board::revealAllMines() {
+    for (int y = 0; y < height; y++) {
+        for (int x = 0; x < width; x++) {
+            if (cells[y][x].isMine()) {
+                cells[y][x].reveal();
+            }
         }
     }
 }
 
 /*
- Function: onTextEntered
- Description: Lets the player type their name on the NAME_INPUT screen.
+ Function: isWinCondition
+ Description: Checks if player has won the game. Victory occurs when the number
+              of revealed cells equals total non-mine cells.
+              Returns true if all safe cells are revealed.
 */
-void Minesweeper::Game::onTextEntered(const sf::Event& event)
-{
-    const auto* textEvent = event.getIf<sf::Event::TextEntered>();
+bool Minesweeper::Board::isWinCondition() const {
+    int safeCells = width * height - totalMines;
+    return revealedCells == safeCells;
+}
 
-    if (textEvent == nullptr)
-    {
-        return;
-    }
-
-    if (currentScreen != ScreenState::NAME_INPUT)
-    {
-        return;
-    }
-
-    if (textEvent->unicode == 8) // Backspace
-    {
-        if (!playerName.empty())
-        {
-            playerName.pop_back();
-        }
-    }
-    else if (textEvent->unicode == 13) // Enter
-    {
-        if (playerName.empty())
-        {
-            playerName = "Player";
-        }
-
-        currentScreen = ScreenState::MAIN_MENU;
-    }
-    else if (textEvent->unicode >= 32 && textEvent->unicode < 128)
-    {
-        // Limit name length.
-        if (playerName.length() < 12)
-        {
-            playerName += static_cast<char>(textEvent->unicode);
+/*
+ Function: forEachCell
+ Description: Iterates through every cell in the board and applies the given
+              function to each cell (mutable access). Used for rendering and updates.
+              Parameters: func = function to apply to each cell
+*/
+void Minesweeper::Board::forEachCell(std::function<void(Cell&)> func) {
+    for (int y = 0; y < height; y++) {
+        for (int x = 0; x < width; x++) {
+            func(cells[y][x]);
         }
     }
 }
 
 /*
- Function: onWindowResize
- Description: Placeholder for future resize logic.
+ Function: forEachCellConst
+ Description: Iterates through every cell in the board and applies the given
+              function to each cell (read-only access). Used for const rendering.
+              Parameters: func = function to apply to each cell
 */
-void Minesweeper::Game::onWindowResize(const sf::Event& event)
-{
-    // No resize logic needed right now.
-}
-
-/*
- Function: startNewGame
- Description: Starts a new game using the selected difficulty.
-*/
-void Minesweeper::Game::startNewGame(const Difficulty& difficulty)
-{
-    if (gameState != nullptr)
-    {
-        gameState->startNewGame(difficulty);
-    }
-
-    timerAccumulator = 0.0f;
-    showLeaderboard = false;
-}
-
-/*
- Function: submitScoreToLeaderboard
- Description: Sends the player's score to the server after a victory.
-*/
-void Minesweeper::Game::submitScoreToLeaderboard()
-{
-    if (networkClient == nullptr || gameState == nullptr)
-    {
-        return;
-    }
-
-    if (!networkClient->isConnected())
-    {
-        return;
-    }
-
-    networkClient->submitScore(
-        playerName,
-        gameState->getTimer().getSeconds(),
-        getDifficultyName()
-    );
-}
-
-/*
- Function: showLeaderboardUI
- Description: Gets leaderboard data from the server if connected.
-*/
-void Minesweeper::Game::showLeaderboardUI()
-{
-    showLeaderboard = true;
-
-    if (networkClient != nullptr && networkClient->isConnected())
-    {
-        currentLeaderboard = networkClient->getLeaderboard(getDifficultyName());
+void Minesweeper::Board::forEachCellConst(std::function<void(const Cell&)> func) const {
+    for (int y = 0; y < height; y++) {
+        for (int x = 0; x < width; x++) {
+            func(cells[y][x]);
+        }
     }
 }
 
 /*
- Function: showMenu
- Description: Returns to the main menu.
+ Function: updateNeighbors
+ Description: Helper function that checks a single neighbor direction and increments
+              count if that neighbor contains a mine. Used internally during number calculation.
+              Parameters: x, y = base coordinates, dx, dy = direction offset, count = reference to increment
 */
-void Minesweeper::Game::showMenu()
-{
-    showLeaderboard = false;
-    currentScreen = ScreenState::MAIN_MENU;
-}
+void Minesweeper::Board::updateNeighbors(int x, int y, int dx, int dy, int& count) const {
+    int newX = x + dx;
+    int newY = y + dy;
 
-/*
- Function: setDifficulty
- Description: Updates selected difficulty without immediately starting the game.
-*/
-void Minesweeper::Game::setDifficulty(const Difficulty& difficulty)
-{
-    selectedDifficulty = difficulty;
-}
-
-/*
- Function: getDifficultyName
- Description: Returns the currently selected difficulty name.
-*/
-std::string Minesweeper::Game::getDifficultyName() const
-{
-    return selectedDifficulty.name;
-}
-
-/*
- Function: screenToBoardPosition
- Description: Converts mouse screen coordinates to board cell coordinates.
-*/
-sf::Vector2i Minesweeper::Game::screenToBoardPosition(const sf::Vector2i& screenPos) const
-{
-    if (gameState == nullptr || renderer == nullptr)
-    {
-        return sf::Vector2i(-1, -1);
-    }
-
-    int boardPixelWidth = gameState->getBoard().getWidth() * CELL_SIZE;
-    int boardPixelHeight = gameState->getBoard().getHeight() * CELL_SIZE;
-
-    int boardOffsetX =
-        (static_cast<int>(renderer->getWindow().getSize().x) - boardPixelWidth) / 2;
-
-    int boardOffsetY =
-        (static_cast<int>(renderer->getWindow().getSize().y) - boardPixelHeight) / 2;
-
-    int adjustedX = screenPos.x - boardOffsetX;
-    int adjustedY = screenPos.y - boardOffsetY;
-
-    if (adjustedX < 0 || adjustedY < 0)
-    {
-        return sf::Vector2i(-1, -1);
-    }
-
-    int boardX = adjustedX / CELL_SIZE;
-    int boardY = adjustedY / CELL_SIZE;
-
-    if (boardX < 0 || boardY < 0 ||
-        boardX >= gameState->getBoard().getWidth() ||
-        boardY >= gameState->getBoard().getHeight())
-    {
-        return sf::Vector2i(-1, -1);
-    }
-
-    return sf::Vector2i(boardX, boardY);
-}
-
-/*
- Function: renderTimer
- Description: Displays the elapsed game time.
-*/
-void Minesweeper::Game::renderTimer()
-{
-    sf::Text text(renderer->getFont(),
-        "Time: " + std::to_string(gameState->getTimer().getSeconds()), 24);
-
-    text.setFillColor(sf::Color::White);
-    text.setPosition({ 20, 20 });
-
-    renderer->getWindow().draw(text);
-}
-
-/*
- Function: renderMineCounter
- Description: Displays remaining mines based on total mines minus flags.
-*/
-void Minesweeper::Game::renderMineCounter()
-{
-    sf::Text text(renderer->getFont(),
-        "Mines: " + std::to_string(gameState->getBoard().getRemainingMines()), 24);
-
-    text.setFillColor(sf::Color::White);
-    text.setPosition({ 20, 55 });
-
-    renderer->getWindow().draw(text);
-}
-
-/*
- Function: renderMenu
- Description: Draws the main menu screen.
-*/
-void Minesweeper::Game::renderMenu()
-{
-    sf::RenderWindow& window = renderer->getWindow();
-
-    sf::Text title(renderer->getFont(), "MINESWEEPER", 44);
-    title.setFillColor(sf::Color::White);
-    title.setPosition({ 250, 70 });
-    window.draw(title);
-
-    sf::Text menu(renderer->getFont(),
-        "Enter - Play\n"
-        "H - How To Play\n"
-        "D - Difficulty Select\n"
-        "N - Enter Player Name\n"
-        "L - Leaderboard\n"
-        "Esc - Quit",
-        24);
-
-    menu.setFillColor(sf::Color::White);
-    menu.setPosition({ 260, 160 });
-    window.draw(menu);
-
-    sf::Text info(renderer->getFont(),
-        "Player: " + playerName +
-        "\nDifficulty: " + selectedDifficulty.name,
-        22);
-
-    info.setFillColor(sf::Color::Yellow);
-    info.setPosition({ 260, 390 });
-    window.draw(info);
-}
-
-/*
- Function: renderHowToPlay
- Description: Draws instructions for playing Minesweeper.
-*/
-void Minesweeper::Game::renderHowToPlay()
-{
-    sf::Text text(renderer->getFont(),
-        "HOW TO PLAY\n\n"
-        "Left Click: Reveal a cell\n"
-        "Right Click: Place/remove a flag\n"
-        "Avoid mines.\n"
-        "Reveal all safe cells to win.\n\n"
-        "Press M to return to menu",
-        24);
-
-    text.setFillColor(sf::Color::White);
-    text.setPosition({ 180, 100 });
-
-    renderer->getWindow().draw(text);
-}
-
-/*
- Function: renderDifficultySelect
- Description: Draws the difficulty selection screen.
-*/
-void Minesweeper::Game::renderDifficultySelect()
-{
-    sf::Text text(renderer->getFont(),
-        "DIFFICULTY SELECT\n\n"
-        "1 - Easy: 9 x 9, 10 mines\n"
-        "2 - Medium: 16 x 16, 40 mines\n"
-        "3 - Hard: 30 x 16, 99 mines\n\n"
-        "Current Difficulty: " + selectedDifficulty.name + "\n\n"
-        "Press M to return to menu",
-        24);
-
-    text.setFillColor(sf::Color::White);
-    text.setPosition({ 160, 100 });
-
-    renderer->getWindow().draw(text);
-}
-
-/*
- Function: renderNameInput
- Description: Draws the player name entry screen.
-*/
-void Minesweeper::Game::renderNameInput()
-{
-    sf::Text text(renderer->getFont(),
-        "ENTER PLAYER NAME\n\n"
-        "Name: " + playerName + "\n\n"
-        "Type your name.\n"
-        "Backspace deletes letters.\n"
-        "Enter saves name.\n\n"
-        "Press M to return to menu",
-        24);
-
-    text.setFillColor(sf::Color::White);
-    text.setPosition({ 180, 100 });
-
-    renderer->getWindow().draw(text);
-}
-
-/*
- Function: renderLeaderboard
- Description: Draws leaderboard entries if available.
-*/
-void Minesweeper::Game::renderLeaderboard()
-{
-    sf::RenderWindow& window = renderer->getWindow();
-
-    sf::Text title(renderer->getFont(), "LEADERBOARD", 38);
-    title.setFillColor(sf::Color::White);
-    title.setPosition({ 260, 60 });
-    window.draw(title);
-
-    sf::Text back(renderer->getFont(), "Press M to return to menu", 20);
-    back.setFillColor(sf::Color::Yellow);
-    back.setPosition({ 260, 110 });
-    window.draw(back);
-
-    if (currentLeaderboard.empty())
-    {
-        sf::Text empty(renderer->getFont(), "No scores found.", 24);
-        empty.setFillColor(sf::Color::White);
-        empty.setPosition({ 260, 170 });
-        window.draw(empty);
-        return;
-    }
-
-    int y = 160;
-
-    for (int i = 0; i < currentLeaderboard.size(); i++)
-    {
-        const LeaderboardEntry& entry = currentLeaderboard[i];
-
-        std::string line =
-            std::to_string(entry.rank) + ". " +
-            entry.playerName + " - " +
-            std::to_string(entry.seconds) + " sec";
-
-        sf::Text score(renderer->getFont(), line, 22);
-        score.setFillColor(sf::Color::White);
-        score.setPosition({ 260, static_cast<float>(y) });
-
-        window.draw(score);
-        y += 35;
+    if (isValidPosition(newX, newY) && cells[newY][newX].isMine()) {
+        count++;
     }
 }
 
 /*
- Function: renderGameOver
- Description: Draws the game-over screen over the board.
+ Function: resetCellFlags
+ Description: Removes all flags from the board by toggling any flagged cell back to covered.
+              Resets flaggedMines counter to zero. Called during board reset.
 */
-void Minesweeper::Game::renderGameOver()
-{
-    renderer->renderBoard(gameState->getBoard());
+void Minesweeper::Board::resetCellFlags() {
+    flaggedMines = 0;
 
-    sf::Text text(renderer->getFont(),
-        "GAME OVER\n\n"
-        "Press R to restart\n"
-        "Press M for menu",
-        32);
-
-    text.setFillColor(sf::Color::Black);
-    text.setPosition({ 250, 80 });
-
-    renderer->getWindow().draw(text);
-}
-
-/*
- Function: renderVictory
- Description: Draws the victory screen over the board.
-*/
-void Minesweeper::Game::renderVictory()
-{
-    renderer->renderBoard(gameState->getBoard());
-
-    sf::Text text(renderer->getFont(),
-        "YOU WIN!\n\n"
-        "Time: " + std::to_string(gameState->getTimer().getSeconds()) + " sec\n"
-        "Press R to restart\n"
-        "Press M for menu",
-        32);
-
-    text.setFillColor(sf::Color::Green);
-    text.setPosition({ 250, 80 });
-
-    renderer->getWindow().draw(text);
+    for (int y = 0; y < height; y++) {
+        for (int x = 0; x < width; x++) {
+            if (cells[y][x].isFlagged()) {
+                cells[y][x].toggleFlag();
+            }
+        }
+    }
 }
